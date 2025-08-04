@@ -1,10 +1,21 @@
+// Enums for new fields
+export type Shape = 'Round' | 'Princess' | 'Emerald' | 'Asscher' | 'Marquise' | 'Oval' | 'Radiant' | 'Pear' | 'Heart' | 'Cushion' | 'Other';
+export type Transparency = 'Transparent' | 'Translucent' | 'Opaque';
+export type Lustre = 'Vitreous' | 'Resinous' | 'Pearly' | 'Greasy' | 'Silky' | 'Waxy' | 'Dull' | 'Metallic';
+export type DesignType = 'Antique' | 'Modern' | 'Temple' | 'Classic' | 'Contemporary' | 'Ethnic' | 'Other';
+export type Occasion = 'Bridal' | 'Daily Wear' | 'Festive' | 'Gift' | 'Work Wear' | 'Party Wear' | 'Other';
+export type StockStatus = 'In Stock' | 'Out of Stock' | 'Made-to-Order' | 'On Hold';
+export type AntiqueEra = 'Pre-1800s' | 'Victorian (1837-1901)' | 'Art Nouveau (1890-1910)' | 'Edwardian (1901-1910)' | 'Art Deco (1920-1935)' | 'Retro (1935-1950)' | 'Mid-Century (1950s)' | 'Modern (Post-1960)' | 'Other';
+export type RegionalStyle = 'Rajasthani' | 'South Indian' | 'Mughal' | 'Nizami' | 'Pahari' | 'Other';
+
 export interface Gemstone {
   id: string;
   name: string;
   category: string;
   subCategory: string;
   itemType: string;
-  type: string;
+
+  // Retained Original Fields
   weight: number; // in carats for gemstones, grams for metals
   dimensions: {
     length: number; // in mm
@@ -16,42 +27,71 @@ export interface Gemstone {
   cut: string;
   origin: string;
   treatment: string;
-  certification: string;
-  acquisitionDate?: string; // Made optional
+  certification: string; // Certification No.
+  acquisitionDate?: string;
   acquisitionPrice?: number;
-  estimatedValue?: number;
   seller?: string;
+  estimatedValue?: number;
   notes: string;
+  images: string[];
+  video?: string;
+  qrCode: string;
+
+  // Consolidated and Renamed Fields
+  shape?: Shape | string;
+  gemVariety?: string; // Replaces 'type' for clarity
+  stoneCount?: number; // Replaces itemSpecificDetails.numberOfPieces
+  ringSize?: string; // Replaces itemSpecificDetails.size
+  totalCaratWeight?: number; // Replaces itemSpecificDetails.totalWeight for jewelry
+
+  // A. Visual & Descriptive
+  shortDescription?: string;
+  detailedDescription?: string;
+  transparency?: Transparency | string;
+  lustre?: Lustre | string;
+  designType?: DesignType | string;
+  occasion?: Occasion | string;
+
+  // B. Trust-Building & Info Transparency
+  treatmentDetails?: string;
+  certificationUpload?: string; // URL to certificate image/PDF
+  returnPolicy?: string;
+  warrantyInfo?: string;
+  careInstructions?: string;
+  zodiacRelevance?: string;
+  inTheBox?: string[];
+
+  // C. E-Commerce Ready
+  mrp?: number;
+  sellingPrice?: number;
+  discountLabel?: string;
+  stockStatus?: StockStatus | string;
+  deliveryTimeEstimate?: string;
+  customOrderAvailable?: boolean;
+  bulkInquiryEnabled?: boolean;
+
+  // D. Antique & Heritage Jewelry Additions
+  antiqueEra?: AntiqueEra | string;
+  regionalStyle?: RegionalStyle | string;
+  materialComposition?: string; // E.g., "22K Gold, Uncut Diamonds, Emeralds"
+  craftsmanshipDetail?: string;
+  artisanOrWorkshop?: string;
+
+  // Original metadata
   tags: string[];
-  images: string[]; // URLs to images
-  video?: string; // URL to video
-  qrCode: string; // URL or data for QR code
   createdAt: string;
-  updatedAt: string;
+  updatedAt:string;
   createdBy: string;
   lastEditedBy: string;
   auditTrail: AuditEvent[];
-  
-  // Item-specific details
-  itemSpecificDetails: {
-    // For metals
-    purity?: string; // e.g., "24K", "18K", "925 Sterling"
-    metalType?: string; // e.g., "Gold", "Silver", "Platinum"
-    
-    // For gemstone lots
-    numberOfPieces?: number;
-    totalWeight?: number;
+
+  // Deprecating itemSpecificDetails in favor of top-level optional fields
+  itemSpecificDetails?: {
+    purity?: string;
+    metalType?: string;
     averageWeight?: number;
-    
-    // For jewelry
-    size?: string; // Ring size, chain length, etc.
-    setting?: string; // Prong, bezel, etc.
-    
-    // For rough stones
-    shape?: string;
+    setting?: string;
     quality?: string;
-    
-    // For carved items
     carving?: string;
     artisan?: string;
     style?: string;
@@ -96,6 +136,10 @@ export interface FilterParams {
   dateFrom?: string;
   dateTo?: string;
   tags?: string[];
+  occasion?: string;
+  designType?: string;
+  stockStatus?: string;
+  materialComposition?: string;
   sortBy?: 'name' | 'createdAt' | 'updatedAt' | 'weight' | 'value';
   sortOrder?: 'asc' | 'desc';
 }

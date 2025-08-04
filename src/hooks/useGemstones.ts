@@ -178,7 +178,7 @@ export const useGemstones = () => {
   // Get all categories
   const getCategories = useCallback(() => {
     const categories = new Set<string>();
-    (gemstones.content ?? []).forEach((gem: { category: string; }) => categories.add(gem.category));
+    (gemstones.content ?? []).forEach((gem: { category: string; }) => gem.category && categories.add(gem.category));
     return Array.from(categories);
   }, [gemstones]);
 
@@ -186,9 +186,27 @@ export const useGemstones = () => {
   const getTags = useCallback(() => {
     const tags = new Set<string>();
     (gemstones.content ?? []).forEach((gem: { tags: any; }) => {
-      (gem.tags || []).forEach((tag: string) => tags.add(tag));
+      (gem.tags || []).forEach((tag: string) => tag && tags.add(tag));
     });
     return Array.from(tags);
+  }, [gemstones]);
+
+  const getOccasions = useCallback(() => {
+    const occasions = new Set<string>();
+    (gemstones.content ?? []).forEach((gem: { occasion?: string; }) => gem.occasion && occasions.add(gem.occasion));
+    return Array.from(occasions);
+  }, [gemstones]);
+
+  const getDesignTypes = useCallback(() => {
+    const designTypes = new Set<string>();
+    (gemstones.content ?? []).forEach((gem: { designType?: string; }) => gem.designType && designTypes.add(gem.designType));
+    return Array.from(designTypes);
+  }, [gemstones]);
+
+  const getStockStatuses = useCallback(() => {
+    const stockStatuses = new Set<string>();
+    (gemstones.content ?? []).forEach((gem: { stockStatus?: string; }) => gem.stockStatus && stockStatuses.add(gem.stockStatus));
+    return Array.from(stockStatuses);
   }, [gemstones]);
 
   return {
@@ -204,18 +222,11 @@ export const useGemstones = () => {
     updateGemstone,
     deleteGemstone,
     getGemstone,
-    getCategories: useCallback(() => {
-      const categories = new Set<string>();
-      (gemstones.content ?? []).forEach((gem: { category: string; }) => categories.add(gem.category));
-      return Array.from(categories);
-    }, [gemstones]),
-    getTags: useCallback(() => {
-      const tags = new Set<string>();
-      (gemstones.content ?? []).forEach((gem: { tags: any; }) => {
-        (gem.tags || []).forEach((tag: string) => tags.add(tag));
-      });
-      return Array.from(tags);
-    }, [gemstones]),
+    getCategories,
+    getTags,
+    getOccasions,
+    getDesignTypes,
+    getStockStatuses,
     refresh: fetchGemstones,
   };
 };
