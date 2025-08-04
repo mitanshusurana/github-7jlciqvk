@@ -5,7 +5,7 @@ import { Html5Qrcode } from 'html5-qrcode';
 import useGemstones from '../hooks/useGemstones';
 import GemstoneGrid from '../components/Gemstone/GemstoneGrid';
 import GemstoneFilter from '../components/Gemstone/GemstoneFilter';
-import { FilterParams } from '../types';
+import { FilterParams, Occasion, DesignType, StockStatus } from '../types';
 
 const InventoryPage: React.FC = () => {
   const { 
@@ -15,11 +15,17 @@ const InventoryPage: React.FC = () => {
     loadMore, 
     setFilters,
     getCategories,
-    getTags
+    getTags,
+    getOccasions,
+    getDesignTypes,
+    getStockStatuses
   } = useGemstones();
   
   const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [occasions, setOccasions] = useState<Occasion[]>([]);
+  const [designTypes, setDesignTypes] = useState<DesignType[]>([]);
+  const [stockStatuses, setStockStatuses] = useState<StockStatus[]>([]);
   const [showQrScanner, setShowQrScanner] = useState(false);
   const qrScannerRef = useRef<Html5Qrcode | null>(null);
   const runningRef = useRef(false);
@@ -30,7 +36,10 @@ const InventoryPage: React.FC = () => {
   useEffect(() => {
     setCategories(getCategories());
     setTags(getTags());
-  }, [getCategories, getTags]);
+    setOccasions(getOccasions());
+    setDesignTypes(getDesignTypes());
+    setStockStatuses(getStockStatuses());
+  }, [gemstones, getCategories, getTags, getOccasions, getDesignTypes, getStockStatuses]);
   
   const handleFilterChange = (filters: FilterParams) => {
     setFilters(filters);
@@ -147,6 +156,9 @@ const InventoryPage: React.FC = () => {
         onFilterChange={handleFilterChange}
         categories={categories}
         tags={tags}
+        occasions={occasions}
+        designTypes={designTypes}
+        stockStatuses={stockStatuses}
       />
       
       {/* Grid view */}

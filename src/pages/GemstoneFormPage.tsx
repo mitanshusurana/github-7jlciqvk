@@ -1,13 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Trash2, Upload, X, Plus, Image as ImageIcon } from 'lucide-react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ArrowLeft, Save, Trash2, Upload, X, Plus, Image as ImageIcon, ChevronDown } from 'lucide-react';
+import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import useGemstones from '../hooks/useGemstones';
-import { Gemstone, Category, ItemType, PreciousGemType, SemiPreciousGemType, OrganicGemType, PreciousMetalType } from '../types';
+import {
+  Gemstone, Category, ItemType, PreciousGemType, SemiPreciousGemType, OrganicGemType, PreciousMetalType,
+  Shape, Transparency, Lustre, DesignType, Occasion, StockStatus, AntiqueEra, RegionalStyle
+} from '../types';
 import { uploadService } from '../services/uploadService';
 import { Html5Qrcode } from 'html5-qrcode';
+
+// Collapsible Section Component
+const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; initialOpen?: boolean }> = ({ title, children, initialOpen = true }) => {
+  const [isOpen, setIsOpen] = useState(initialOpen);
+  return (
+    <div className="card">
+      <button
+        type="button"
+        className="w-full flex justify-between items-center p-6"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <h2 className="text-xl font-semibold text-neutral-900">{title}</h2>
+        <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && <div className="p-6 pt-0">{children}</div>}
+    </div>
+  );
+};
 
 const GemstoneFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -125,47 +146,87 @@ const GemstoneFormPage: React.FC = () => {
     'Other'
   ];
 
+  const shapeOptions: Shape[] = ['Round', 'Princess', 'Emerald', 'Asscher', 'Marquise', 'Oval', 'Radiant', 'Pear', 'Heart', 'Cushion', 'Other'];
+  const transparencyOptions: Transparency[] = ['Transparent', 'Translucent', 'Opaque'];
+  const lustreOptions: Lustre[] = ['Vitreous', 'Resinous', 'Pearly', 'Greasy', 'Silky', 'Waxy', 'Dull', 'Metallic'];
+  const designTypeOptions: DesignType[] = ['Antique', 'Modern', 'Temple', 'Classic', 'Contemporary', 'Ethnic', 'Other'];
+  const occasionOptions: Occasion[] = ['Bridal', 'Daily Wear', 'Festive', 'Gift', 'Work Wear', 'Party Wear', 'Other'];
+  const stockStatusOptions: StockStatus[] = ['In Stock', 'Out of Stock', 'Made-to-Order', 'On Hold'];
+  const antiqueEraOptions: AntiqueEra[] = ['Pre-1800s', 'Victorian (1837-1901)', 'Art Nouveau (1890-1910)', 'Edwardian (1901-1910)', 'Art Deco (1920-1935)', 'Retro (1935-1950)', 'Mid-Century (1950s)', 'Modern (Post-1960)', 'Other'];
+  const regionalStyleOptions: RegionalStyle[] = ['Rajasthani', 'South Indian', 'Mughal', 'Nizami', 'Pahari', 'Other'];
+
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      getGemstone(id).then((data: Gemstone) => {
+    const fetchGemstone = async () => {
+      if (id) {
+        setLoading(true);
+        const data = await getGemstone(id);
         setInitialValues(data);
         setLoading(false);
-      });
-    } else {
-      setInitialValues({
-        name: '',
-        category: 'Precious Gemstones',
-        subCategory: '',
-        itemType: 'Loose Gemstone',
-        type: '',
-        weight: 0,
-        dimensions: { length: 0, width: 0, height: 0 },
-        color: '',
-        clarity: '',
-        cut: '',
-        origin: '',
-        treatment: '',
-        certification: '',
-        acquisitionDate: '',
-        acquisitionPrice: undefined,
-        estimatedValue: undefined,
-        seller: '',
-        notes: '',
-        tags: [],
-        images: [],
-        video: '',
-        id: '',
-        createdBy: '',
-        lastEditedBy: '',
-        qrCode: '',
-        createdAt: '',
-        updatedAt: '',
-        auditTrail: [],
-        itemSpecificDetails: {}
-      });
-      setLoading(false);
-    }
+      } else {
+        setInitialValues({
+          id: '',
+          name: '',
+          category: 'Precious Gemstones',
+          subCategory: '',
+          itemType: 'Loose Gemstone',
+          weight: 0,
+          dimensions: { length: 0, width: 0, height: 0 },
+          color: '',
+          clarity: '',
+          cut: '',
+          origin: '',
+          treatment: '',
+          certification: '',
+          acquisitionDate: '',
+          acquisitionPrice: undefined,
+          seller: '',
+          estimatedValue: undefined,
+          notes: '',
+          images: [],
+          video: '',
+          qrCode: '',
+          shape: '',
+          gemVariety: '',
+          stoneCount: undefined,
+          ringSize: '',
+          totalCaratWeight: undefined,
+          shortDescription: '',
+          detailedDescription: '',
+          transparency: '',
+          lustre: '',
+          designType: '',
+          occasion: '',
+          treatmentDetails: '',
+          certificationUpload: '',
+          returnPolicy: '',
+          warrantyInfo: '',
+          careInstructions: '',
+          zodiacRelevance: '',
+          inTheBox: [],
+          mrp: undefined,
+          sellingPrice: undefined,
+          discountLabel: '',
+          stockStatus: 'In Stock',
+          deliveryTimeEstimate: '',
+          customOrderAvailable: false,
+          bulkInquiryEnabled: false,
+          antiqueEra: '',
+          regionalStyle: '',
+          materialComposition: '',
+          craftsmanshipDetail: '',
+          artisanOrWorkshop: '',
+          tags: [],
+          createdAt: '',
+          updatedAt: '',
+          createdBy: '',
+          lastEditedBy: '',
+          auditTrail: [],
+          itemSpecificDetails: {},
+        });
+        setLoading(false);
+      }
+    };
+    fetchGemstone();
   }, [id, getGemstone]);
 
   const validationSchema = Yup.object().shape({
@@ -173,21 +234,20 @@ const GemstoneFormPage: React.FC = () => {
     category: Yup.string().required('Category is required'),
     subCategory: Yup.string().required('Sub-category is required'),
     itemType: Yup.string().required('Item type is required'),
-    type: Yup.string().required('Type is required'),
+    gemVariety: Yup.string(),
     weight: Yup.number().required('Weight is required').positive().min(0.01),
     dimensions: Yup.object().shape({
-      length: Yup.number().required().positive(),
-      width: Yup.number().required().positive(),
-      height: Yup.number().required().positive(),
+      length: Yup.number().positive().min(0),
+      width: Yup.number().positive().min(0),
+      height: Yup.number().positive().min(0),
     }),
-    color: Yup.string().required('Color is required'),
-    clarity: Yup.string().required('Clarity is required'),
-    cut: Yup.string().required('Cut is required'),
-    origin: Yup.string().required('Origin is required'),
+    id: Yup.string().required('Item ID is required'),
+    mrp: Yup.number().positive().nullable(),
+    sellingPrice: Yup.number().positive().nullable(),
     acquisitionPrice: Yup.number().positive().nullable(),
     estimatedValue: Yup.number().positive().nullable(),
-    tags: Yup.array().of(Yup.string()),
-    id: Yup.string().required('Item ID is required'),
+    stoneCount: Yup.number().integer().min(0).nullable(),
+    totalCaratWeight: Yup.number().positive().nullable(),
   });
 
   const getSubCategoryOptions = (category: string) => {
@@ -358,627 +418,287 @@ const GemstoneFormPage: React.FC = () => {
             // Reset sub-category when category changes
             useEffect(() => {
               setFieldValue('subCategory', '');
-              setFieldValue('type', '');
-            }, [values.category]);
+              setFieldValue('gemVariety', '');
+            }, [values.category, setFieldValue]);
 
             return (
-              <Form className="space-y-8">
-                {/* Basic Information */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Basic Information</h2>
+              <Form className="space-y-6">
+                <CollapsibleSection title="Basic Information">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="name" className="form-label">Name</label>
-                      <Field
-                        type="text"
-                        id="name"
-                        name="name"
-                        className="form-input"
-                        placeholder="Enter item name"
-                      />
+                      <Field name="name" className="form-input" placeholder="e.g. Natural Burmese Ruby" />
                       <ErrorMessage name="name" component="div" className="text-error-600 text-sm mt-1" />
                     </div>
-                    
                     <div>
                       <label htmlFor="category" className="form-label">Category</label>
-                      <Field
-                        as="select"
-                        id="category"
-                        name="category"
-                        className="form-select"
-                      >
-                        <option value="">Select category</option>
-                        {categories.map((category) => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        ))}
+                      <Field as="select" name="category" className="form-select">
+                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
                       </Field>
-                      <ErrorMessage name="category" component="div" className="text-error-600 text-sm mt-1" />
                     </div>
-                    
                     <div>
                       <label htmlFor="subCategory" className="form-label">Sub-Category</label>
-                      <Field
-                        as="select"
-                        id="subCategory"
-                        name="subCategory"
-                        className="form-select"
-                        disabled={!values.category}
-                      >
+                      <Field as="select" name="subCategory" className="form-select" disabled={!values.category}>
                         <option value="">Select sub-category</option>
-                        {getSubCategoryOptions(values.category).map((subCat) => (
-                          <option key={subCat} value={subCat}>
-                            {subCat}
-                          </option>
-                        ))}
+                        {getSubCategoryOptions(values.category).map(sc => <option key={sc} value={sc}>{sc}</option>)}
                       </Field>
-                      <ErrorMessage name="subCategory" component="div" className="text-error-600 text-sm mt-1" />
                     </div>
-                    
                     <div>
                       <label htmlFor="itemType" className="form-label">Item Type</label>
-                      <Field
-                        as="select"
-                        id="itemType"
-                        name="itemType"
-                        className="form-select"
-                      >
-                        <option value="">Select item type</option>
-                        {itemTypes.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
+                      <Field as="select" name="itemType" className="form-select">
+                        {itemTypes.map(it => <option key={it} value={it}>{it}</option>)}
                       </Field>
-                      <ErrorMessage name="itemType" component="div" className="text-error-600 text-sm mt-1" />
                     </div>
-                    
-                    <div>
-                      <label htmlFor="type" className="form-label">Specific Type</label>
-                      <Field
-                        type="text"
-                        id="type"
-                        name="type"
-                        className="form-input"
-                        placeholder="Enter specific type"
-                      />
-                      <ErrorMessage name="type" component="div" className="text-error-600 text-sm mt-1" />
+                     <div>
+                      <label htmlFor="gemVariety" className="form-label">Gem Variety</label>
+                      <Field name="gemVariety" className="form-input" placeholder="e.g. Corundum, Beryl" />
                     </div>
-                    
                     <div>
                       <label htmlFor="weight" className="form-label">
                         Weight ({values.category === 'Precious Metals' ? 'grams' : 'carats'})
                       </label>
-                      <Field
-                        type="number"
-                        id="weight"
-                        name="weight"
-                        className="form-input"
-                        step="0.01"
-                        min="0"
-                      />
+                      <Field type="number" name="weight" className="form-input" step="0.01" min="0" />
                       <ErrorMessage name="weight" component="div" className="text-error-600 text-sm mt-1" />
                     </div>
                   </div>
-                </div>
-                
-                {/* Physical Characteristics */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Physical Characteristics</h2>
+                </CollapsibleSection>
+
+                <CollapsibleSection title="Description & Occasion">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <label htmlFor="shortDescription" className="form-label">Short Description / Tagline</label>
+                      <Field name="shortDescription" as="textarea" rows={2} className="form-input" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="detailedDescription" className="form-label">Detailed Description</label>
+                      <Field name="detailedDescription" as="textarea" rows={4} className="form-input" />
+                    </div>
+                     <div>
+                      <label htmlFor="designType" className="form-label">Design Type</label>
+                      <Field as="select" name="designType" className="form-select">
+                        <option value="">Select design type</option>
+                        {designTypeOptions.map(dt => <option key={dt} value={dt}>{dt}</option>)}
+                      </Field>
+                    </div>
+                    <div>
+                      <label htmlFor="occasion" className="form-label">Occasion</label>
+                      <Field as="select" name="occasion" className="form-select">
+                        <option value="">Select occasion</option>
+                        {occasionOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                      </Field>
+                    </div>
+                  </div>
+                </CollapsibleSection>
+
+                <CollapsibleSection title="Physical Characteristics">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label htmlFor="dimensions.length" className="form-label">Length (mm)</label>
-                      <Field
-                        type="number"
-                        id="dimensions.length"
-                        name="dimensions.length"
-                        className="form-input"
-                        step="0.01"
-                        min="0"
-                      />
-                      <ErrorMessage name="dimensions.length" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field type="number" name="dimensions.length" className="form-input" step="0.01" min="0" />
                     </div>
-                    
                     <div>
                       <label htmlFor="dimensions.width" className="form-label">Width (mm)</label>
-                      <Field
-                        type="number"
-                        id="dimensions.width"
-                        name="dimensions.width"
-                        className="form-input"
-                        step="0.01"
-                        min="0"
-                      />
-                      <ErrorMessage name="dimensions.width" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field type="number" name="dimensions.width" className="form-input" step="0.01" min="0" />
                     </div>
-                    
                     <div>
                       <label htmlFor="dimensions.height" className="form-label">Height (mm)</label>
-                      <Field
-                        type="number"
-                        id="dimensions.height"
-                        name="dimensions.height"
-                        className="form-input"
-                        step="0.01"
-                        min="0"
-                      />
-                      <ErrorMessage name="dimensions.height" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field type="number" name="dimensions.height" className="form-input" step="0.01" min="0" />
                     </div>
-                    
                     <div>
                       <label htmlFor="color" className="form-label">Color</label>
-                      <Field
-                        type="text"
-                        id="color"
-                        name="color"
-                        className="form-input"
-                        placeholder="Enter color"
-                      />
-                      <ErrorMessage name="color" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field name="color" className="form-input" />
                     </div>
-                    
                     <div>
                       <label htmlFor="clarity" className="form-label">Clarity</label>
-                      <Field
-                        type="text"
-                        id="clarity"
-                        name="clarity"
-                        className="form-input"
-                        placeholder="Enter clarity"
-                      />
-                      <ErrorMessage name="clarity" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field name="clarity" className="form-input" />
                     </div>
-                    
                     <div>
                       <label htmlFor="cut" className="form-label">Cut</label>
-                      <Field
-                        type="text"
-                        id="cut"
-                        name="cut"
-                        className="form-input"
-                        placeholder="Enter cut"
-                      />
-                      <ErrorMessage name="cut" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field name="cut" className="form-input" />
+                    </div>
+                    <div>
+                      <label htmlFor="shape" className="form-label">Shape</label>
+                      <Field as="select" name="shape" className="form-select">
+                        <option value="">Select shape</option>
+                        {shapeOptions.map(s => <option key={s} value={s}>{s}</option>)}
+                      </Field>
+                    </div>
+                    <div>
+                      <label htmlFor="transparency" className="form-label">Transparency</label>
+                      <Field as="select" name="transparency" className="form-select">
+                        <option value="">Select transparency</option>
+                        {transparencyOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                      </Field>
+                    </div>
+                    <div>
+                      <label htmlFor="lustre" className="form-label">Lustre</label>
+                      <Field as="select" name="lustre" className="form-select">
+                        <option value="">Select lustre</option>
+                        {lustreOptions.map(l => <option key={l} value={l}>{l}</option>)}
+                      </Field>
                     </div>
                   </div>
-                </div>
+                </CollapsibleSection>
 
-                {/* Item-Specific Details */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Item-Specific Details</h2>
+                <CollapsibleSection title="Jewelry & Composition">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Metal-specific fields */}
-                    {values.category === 'Precious Metals' && (
-                      <>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.purity" className="form-label">Purity</label>
-                          <Field
-                            as="select"
-                            id="itemSpecificDetails.purity"
-                            name="itemSpecificDetails.purity"
-                            className="form-select"
-                          >
-                            <option value="">Select purity</option>
-                            {purityOptions.map((purity) => (
-                              <option key={purity} value={purity}>
-                                {purity}
-                              </option>
-                            ))}
-                          </Field>
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.metalType" className="form-label">Metal Type</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.metalType"
-                            name="itemSpecificDetails.metalType"
-                            className="form-input"
-                            placeholder="Enter metal type"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Gemstone lot fields */}
-                    {values.itemType === 'Gemstone Lot' && (
-                      <>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.numberOfPieces" className="form-label">Number of Pieces</label>
-                          <Field
-                            type="number"
-                            id="itemSpecificDetails.numberOfPieces"
-                            name="itemSpecificDetails.numberOfPieces"
-                            className="form-input"
-                            min="1"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.totalWeight" className="form-label">Total Weight</label>
-                          <Field
-                            type="number"
-                            id="itemSpecificDetails.totalWeight"
-                            name="itemSpecificDetails.totalWeight"
-                            className="form-input"
-                            step="0.01"
-                            min="0"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.averageWeight" className="form-label">Average Weight per Piece</label>
-                          <Field
-                            type="number"
-                            id="itemSpecificDetails.averageWeight"
-                            name="itemSpecificDetails.averageWeight"
-                            className="form-input"
-                            step="0.01"
-                            min="0"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Jewelry fields */}
-                    {['Ring', 'Necklace', 'Bracelet', 'Earrings', 'Pendant', 'Brooch', 'Custom Jewelry'].includes(values.itemType) && (
-                      <>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.size" className="form-label">Size</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.size"
-                            name="itemSpecificDetails.size"
-                            className="form-input"
-                            placeholder="Enter size (e.g., 7, 18 inches)"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.setting" className="form-label">Setting</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.setting"
-                            name="itemSpecificDetails.setting"
-                            className="form-input"
-                            placeholder="Enter setting type"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Rough stone fields */}
-                    {values.itemType === 'Rough Stone' && (
-                      <>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.shape" className="form-label">Shape</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.shape"
-                            name="itemSpecificDetails.shape"
-                            className="form-input"
-                            placeholder="Enter shape"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.quality" className="form-label">Quality Grade</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.quality"
-                            name="itemSpecificDetails.quality"
-                            className="form-input"
-                            placeholder="Enter quality grade"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Carved item fields */}
-                    {values.itemType === 'Carved Idol' && (
-                      <>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.carving" className="form-label">Carving Subject</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.carving"
-                            name="itemSpecificDetails.carving"
-                            className="form-input"
-                            placeholder="Enter carving subject"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.artisan" className="form-label">Artisan</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.artisan"
-                            name="itemSpecificDetails.artisan"
-                            className="form-input"
-                            placeholder="Enter artisan name"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="itemSpecificDetails.style" className="form-label">Style</label>
-                          <Field
-                            type="text"
-                            id="itemSpecificDetails.style"
-                            name="itemSpecificDetails.style"
-                            className="form-input"
-                            placeholder="Enter style"
-                          />
-                        </div>
-                      </>
-                    )}
+                    <div>
+                      <label htmlFor="stoneCount" className="form-label">Stone Count</label>
+                      <Field type="number" name="stoneCount" className="form-input" min="0" />
+                    </div>
+                    <div>
+                      <label htmlFor="totalCaratWeight" className="form-label">Total Carat Weight</label>
+                      <Field type="number" name="totalCaratWeight" className="form-input" step="0.01" min="0" />
+                    </div>
+                    <div>
+                      <label htmlFor="ringSize" className="form-label">Ring Size</label>
+                      <Field name="ringSize" className="form-input" />
+                    </div>
+                     <div className="md:col-span-2">
+                      <label htmlFor="materialComposition" className="form-label">Material Composition</label>
+                      <Field name="materialComposition" className="form-input" placeholder="e.g. 22K Gold, Uncut Diamonds..." />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="craftsmanshipDetail" className="form-label">Craftsmanship Detail</label>
+                      <Field name="craftsmanshipDetail" className="form-input" />
+                    </div>
+                     <div>
+                      <label htmlFor="artisanOrWorkshop" className="form-label">Artisan / Workshop</label>
+                      <Field name="artisanOrWorkshop" className="form-input" />
+                    </div>
                   </div>
-                </div>
-                
-                {/* Origin and Treatment */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Origin and Treatment</h2>
+                </CollapsibleSection>
+
+                {values.itemType === 'Antique Piece' && (
+                  <CollapsibleSection title="Antique & Heritage Details">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="antiqueEra" className="form-label">Antique Era</label>
+                        <Field as="select" name="antiqueEra" className="form-select">
+                          <option value="">Select era</option>
+                          {antiqueEraOptions.map(ae => <option key={ae} value={ae}>{ae}</option>)}
+                        </Field>
+                      </div>
+                      <div>
+                        <label htmlFor="regionalStyle" className="form-label">Regional Style</label>
+                        <Field as="select" name="regionalStyle" className="form-select">
+                          <option value="">Select style</option>
+                          {regionalStyleOptions.map(rs => <option key={rs} value={rs}>{rs}</option>)}
+                        </Field>
+                      </div>
+                    </div>
+                  </CollapsibleSection>
+                )}
+
+                <CollapsibleSection title="Origin & Certification">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="origin" className="form-label">Origin</label>
-                      <Field
-                        type="text"
-                        id="origin"
-                        name="origin"
-                        className="form-input"
-                        placeholder="Enter origin"
-                      />
-                      <ErrorMessage name="origin" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field name="origin" className="form-input" />
                     </div>
-                    
                     <div>
                       <label htmlFor="treatment" className="form-label">Treatment</label>
-                      <Field
-                        type="text"
-                        id="treatment"
-                        name="treatment"
-                        className="form-input"
-                        placeholder="Enter treatment"
-                      />
-                      <ErrorMessage name="treatment" component="div" className="text-error-600 text-sm mt-1" />
+                      <Field name="treatment" className="form-input" />
                     </div>
-                    
+                    <div className="md:col-span-2">
+                      <label htmlFor="treatmentDetails" className="form-label">Treatment Details</label>
+                      <Field name="treatmentDetails" as="textarea" rows={2} className="form-input" />
+                    </div>
                     <div>
-                      <label htmlFor="certification" className="form-label">Certification</label>
-                      <Field
-                        type="text"
-                        id="certification"
-                        name="certification"
-                        className="form-input"
-                        placeholder="Enter certification number"
-                      />
-                      <ErrorMessage name="certification" component="div" className="text-error-600 text-sm mt-1" />
+                      <label htmlFor="certification" className="form-label">Certification No.</label>
+                      <Field name="certification" className="form-input" />
+                    </div>
+                    <div>
+                      <label className="form-label">Certification Document</label>
+                      <input type="file" accept="application/pdf,image/*" onChange={(e) => {
+                        const file = e.currentTarget.files?.[0];
+                        if (file) {
+                          setSelectedCertificate(file);
+                          setFieldValue("certificationUpload", file.name);
+                        }
+                      }} className="form-input" />
+                      {values.certificationUpload && <span className="text-sm text-neutral-500 mt-1">{values.certificationUpload}</span>}
                     </div>
                   </div>
-                </div>
+                </CollapsibleSection>
                 
-                {/* Acquisition Details */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Acquisition Details</h2>
+                <CollapsibleSection title="E-Commerce">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="acquisitionDate" className="form-label">Acquisition Date (Optional)</label>
-                      <Field
-                        type="date"
-                        id="acquisitionDate"
-                        name="acquisitionDate"
-                        className="form-input"
-                      />
-                      <ErrorMessage name="acquisitionDate" component="div" className="text-error-600 text-sm mt-1" />
+                      <label htmlFor="mrp" className="form-label">MRP</label>
+                      <Field type="number" name="mrp" className="form-input" />
                     </div>
-                    
                     <div>
-                      <label htmlFor="seller" className="form-label">Seller</label>
-                      <Field
-                        type="text"
-                        id="seller"
-                        name="seller"
-                        className="form-input"
-                        placeholder="Enter seller name"
-                      />
-                      <ErrorMessage name="seller" component="div" className="text-error-600 text-sm mt-1" />
+                      <label htmlFor="sellingPrice" className="form-label">Selling Price</label>
+                      <Field type="number" name="sellingPrice" className="form-input" />
                     </div>
-                    
                     <div>
-                      <label htmlFor="acquisitionPrice" className="form-label">Acquisition Price</label>
-                      <Field
-                        type="number"
-                        id="acquisitionPrice"
-                        name="acquisitionPrice"
-                        className="form-input"
-                        step="0.01"
-                        min="0"
-                        placeholder="Enter acquisition price"
-                      />
-                      <ErrorMessage name="acquisitionPrice" component="div" className="text-error-600 text-sm mt-1" />
+                      <label htmlFor="discountLabel" className="form-label">Discount Label</label>
+                      <Field name="discountLabel" className="form-input" placeholder="e.g. 15% OFF" />
                     </div>
-                    
                     <div>
-                      <label htmlFor="estimatedValue" className="form-label">Estimated Value</label>
-                      <Field
-                        type="number"
-                        id="estimatedValue"
-                        name="estimatedValue"
-                        className="form-input"
-                        step="0.01"
-                        min="0"
-                        placeholder="Enter estimated value"
-                      />
-                      <ErrorMessage name="estimatedValue" component="div" className="text-error-600 text-sm mt-1" />
+                      <label htmlFor="stockStatus" className="form-label">Stock Status</label>
+                      <Field as="select" name="stockStatus" className="form-select">
+                        {stockStatusOptions.map(ss => <option key={ss} value={ss}>{ss}</option>)}
+                      </Field>
                     </div>
-                    
-                    <div>
-                      <label htmlFor="id" className="form-label">Item ID</label>
-                      <div className="flex items-center gap-2">
-                        <Field
-                          type="text"
-                          id="id"
-                          name="id"
-                          className="form-input"
-                          placeholder="Enter unique item ID"
-                        />
-                        <button
-                          type="button"
-                          className="btn-outline"
-                          onClick={() => setShowQrScanner((prev) => !prev)}
-                          title="Scan QR"
-                        >
-                          <span role="img" aria-label="Scan QR">📷</span>
-                        </button>
-                      </div>
-                      <ErrorMessage name="id" component="div" className="text-error-600 text-sm mt-1" />
-                      {showQrScanner && (
-                        <div className="mt-2">
-                          <div id={qrRegionId} style={{ width: 300 }} />
-                          <button
-                            type="button"
-                            className="btn-outline mt-2"
-                            onClick={() => setShowQrScanner(false)}
-                          >
-                            Close Scanner
-                          </button>
-                        </div>
-                      )}
+                    <div className="md:col-span-2">
+                      <label htmlFor="deliveryTimeEstimate" className="form-label">Delivery Time Estimate</label>
+                      <Field name="deliveryTimeEstimate" className="form-input" placeholder="e.g. 5-7 business days" />
                     </div>
-                  </div>
-                </div>
-                
-                {/* Media Upload */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Media</h2>
-                  
-                  {/* Image upload */}
-                  <div className="mb-6">
-                    <label className="form-label">Images</label>
-                    <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      {imagePreviewUrls.map((url, index) => (
-                        <div key={index} className="relative aspect-square">
-                          <img
-                            src={url}
-                            alt={`Preview ${index + 1}`}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
-                              setSelectedImages(prev => prev.filter((_, i) => i !== index));
-                            }}
-                            className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
-                      ))}
-                      
-                      <label className="relative aspect-square border-2 border-dashed border-neutral-300 rounded-lg hover:border-primary-500 transition-colors cursor-pointer">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={handleImageSelect}
-                          className="sr-only"
-                        />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-500">
-                          <ImageIcon className="h-8 w-8 mb-2" />
-                          <span className="text-sm">Add Image</span>
-                        </div>
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-2">
+                        <Field type="checkbox" name="customOrderAvailable" className="form-checkbox" />
+                        Custom Order Available
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <Field type="checkbox" name="bulkInquiryEnabled" className="form-checkbox" />
+                        Bulk Inquiry Enabled
                       </label>
                     </div>
                   </div>
-                  
-                  {/* Video upload */}
-                  <div>
-                    <label className="form-label">Video</label>
-                    <div className="mt-2">
-                      {videoPreviewUrl ? (
-                        <div className="relative aspect-video">
-                          <video
-                            src={videoPreviewUrl}
-                            controls
-                            className="w-full h-full object-contain rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setVideoPreviewUrl('');
-                              setSelectedVideo(null);
-                            }}
-                            className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <label className="relative aspect-video border-2 border-dashed border-neutral-300 rounded-lg hover:border-primary-500 transition-colors cursor-pointer">
-                          <input
-                            type="file"
-                            accept="video/*"
-                            onChange={handleVideoSelect}
-                            className="sr-only"
-                          />
-                          <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-500">
-                            <Upload className="h-8 w-8 mb-2" />
-                            <span className="text-sm">Upload Video</span>
+                </CollapsibleSection>
+
+                <CollapsibleSection title="Additional Information">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <label htmlFor="careInstructions" className="form-label">Care Instructions</label>
+                      <Field name="careInstructions" as="textarea" rows={3} className="form-input" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="returnPolicy" className="form-label">Return Policy</label>
+                      <Field name="returnPolicy" className="form-input" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="warrantyInfo" className="form-label">Warranty Information</label>
+                      <Field name="warrantyInfo" className="form-input" />
+                    </div>
+                     <div>
+                      <label htmlFor="zodiacRelevance" className="form-label">Zodiac Relevance</label>
+                      <Field name="zodiacRelevance" className="form-input" />
+                    </div>
+                    <div>
+                      <label htmlFor="inTheBox" className="form-label">What's in the Box</label>
+                      <FieldArray name="inTheBox">
+                        {({ push, remove, form }) => (
+                          <div>
+                            {form.values.inTheBox?.map((item: any, index: number) => (
+                              <div key={index} className="flex items-center gap-2 mb-2">
+                                <Field name={`inTheBox.${index}`} className="form-input" />
+                                <button type="button" onClick={() => remove(index)}><X className="h-4 w-4" /></button>
+                              </div>
+                            ))}
+                            <button type="button" onClick={() => push('')} className="btn-outline text-sm">Add Item</button>
                           </div>
-                        </label>
-                      )}
+                        )}
+                      </FieldArray>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="notes" className="form-label">Internal Notes</label>
+                      <Field name="notes" as="textarea" rows={3} className="form-input" />
                     </div>
                   </div>
-                </div>
-                
-                {/* Notes and Tags */}
-                <div className="card p-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Additional Information</h2>
-                  
-                  <div className="mb-6">
-                    <label htmlFor="notes" className="form-label">Notes</label>
-                    <Field
-                      as="textarea"
-                      id="notes"
-                      name="notes"
-                      rows={4}
-                      className="form-input"
-                      placeholder="Enter any additional notes about the item"
-                    />
-                    <ErrorMessage name="notes" component="div" className="text-error-600 text-sm mt-1" />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="tags" className="form-label">Tags</label>
-                    <div className="flex flex-wrap gap-2">
-                      {values.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="bg-neutral-100 text-neutral-700 px-3 py-1 rounded-full text-sm flex items-center"
-                        >
-                          {tag}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newTags = values.tags.filter((_, i) => i !== index);
-                              setFieldValue('tags', newTags);
-                            }}
-                            className="ml-2 text-neutral-400 hover:text-neutral-600"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const tag = prompt('Enter a new tag:');
-                          if (tag && !values.tags.includes(tag)) {
-                            setFieldValue('tags', [...values.tags, tag]);
-                          }
-                        }}
-                        className="bg-neutral-100 text-neutral-700 hover:bg-neutral-200 px-3 py-1 rounded-full text-sm flex items-center"
-                      >
-                        <Plus className="h-3 w-3 mr-1" />
-                        Add Tag
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                </CollapsibleSection>
                 
                 {/* Form actions */}
                 <div className="flex justify-end space-x-4">

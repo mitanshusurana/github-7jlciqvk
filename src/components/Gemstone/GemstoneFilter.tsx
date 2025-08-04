@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, X, Search, ArrowDownAZ, ArrowUpZA, Calendar } from 'lucide-react';
-import { FilterParams } from '../../types';
+import { FilterParams, Occasion, DesignType, StockStatus } from '../../types';
 
 interface GemstoneFilterProps {
   onFilterChange: (filters: FilterParams) => void;
   categories: string[];
   tags: string[];
+  occasions: Occasion[];
+  designTypes: DesignType[];
+  stockStatuses: StockStatus[];
 }
 
 const GemstoneFilter: React.FC<GemstoneFilterProps> = ({ 
   onFilterChange, 
   categories, 
-  tags 
+  tags,
+  occasions,
+  designTypes,
+  stockStatuses
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<FilterParams>({
@@ -20,6 +26,10 @@ const GemstoneFilter: React.FC<GemstoneFilterProps> = ({
     dateFrom: '',
     dateTo: '',
     tags: [],
+    occasion: '',
+    designType: '',
+    stockStatus: '',
+    materialComposition: '',
     sortBy: 'createdAt',
     sortOrder: 'desc'
   });
@@ -52,6 +62,10 @@ const GemstoneFilter: React.FC<GemstoneFilterProps> = ({
       dateFrom: '',
       dateTo: '',
       tags: [],
+      occasion: '',
+      designType: '',
+      stockStatus: '',
+      materialComposition: '',
       sortBy: 'createdAt',
       sortOrder: 'desc'
     });
@@ -165,25 +179,46 @@ const GemstoneFilter: React.FC<GemstoneFilterProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Category filter */}
             <div>
-              <label htmlFor="category" className="form-label">
-                Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={filters.category}
-                onChange={handleInputChange}
-                className="form-select"
-              >
+              <label htmlFor="category" className="form-label">Category</label>
+              <select id="category" name="category" value={filters.category} onChange={handleInputChange} className="form-select">
                 <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
+                {categories.map((category) => <option key={category} value={category}>{category}</option>)}
               </select>
             </div>
             
+            {/* Occasion filter */}
+            <div>
+              <label htmlFor="occasion" className="form-label">Occasion</label>
+              <select id="occasion" name="occasion" value={filters.occasion} onChange={handleInputChange} className="form-select">
+                <option value="">All Occasions</option>
+                {occasions.map((occasion) => <option key={occasion} value={occasion}>{occasion}</option>)}
+              </select>
+            </div>
+
+            {/* Design Type filter */}
+            <div>
+              <label htmlFor="designType" className="form-label">Design Type</label>
+              <select id="designType" name="designType" value={filters.designType} onChange={handleInputChange} className="form-select">
+                <option value="">All Design Types</option>
+                {designTypes.map((designType) => <option key={designType} value={designType}>{designType}</option>)}
+              </select>
+            </div>
+
+            {/* Stock Status filter */}
+            <div>
+              <label htmlFor="stockStatus" className="form-label">Stock Status</label>
+              <select id="stockStatus" name="stockStatus" value={filters.stockStatus} onChange={handleInputChange} className="form-select">
+                <option value="">All Statuses</option>
+                {stockStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
+              </select>
+            </div>
+
+            {/* Material Composition filter */}
+            <div>
+              <label htmlFor="materialComposition" className="form-label">Material</label>
+              <input type="text" name="materialComposition" value={filters.materialComposition} onChange={handleInputChange} className="form-input" placeholder="e.g. Gold, Silver" />
+            </div>
+
             {/* Date range filter */}
             <div>
               <label htmlFor="dateFrom" className="form-label flex items-center">
