@@ -26,10 +26,10 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="inventory" element={<InventoryPage />} />
-        <Route path="gemstone/:id" element={<GemstoneDetailPage />} />
-        <Route path="gemstone/new" element={<GemstoneFormPage />} />
-        <Route path="gemstone/:id/edit" element={<GemstoneFormPage />} />
-        <Route path="gemstone/:id/qr" element={<QrCodePage />} />
+        <Route path="product/:id" element={<GemstoneDetailPage />} />
+        <Route path="product/new" element={<GemstoneFormPage />} />
+        <Route path="product/:id/edit" element={<GemstoneFormPage />} />
+        <Route path="product/:id/qr" element={<QrCodePage />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<NotFoundPage />} />

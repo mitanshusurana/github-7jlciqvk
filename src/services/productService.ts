@@ -1,38 +1,35 @@
 import { api } from '../config/api';
-import { Gemstone } from '../types';
+import { AnyProduct } from '../types';
 
-export const gemstoneService = {
-  // Get all gemstones with pagination and filters
-  async getGemstones(params?: Record<string, any>) {
+export const productService = {
+  // Get all products with pagination and filters
+  async getProducts(params?: Record<string, any>) {
     // params can include page, size, sort, filters, etc.
     const response = await api.get('', { params });
     return response.data; // return the full paginated response
   },
 
-  // Get a single gemstone by ID
-  async getGemstone(id: string) {
+  // Get a single product by ID
+  async getProduct(id: string) {
     const response = await api.get(`${id}`);
     return response.data;
   },
 
-  // Create a new gemstone
-  async createGemstone(data: Omit<Gemstone, 'id' | 'createdAt' | 'updatedAt'>) {
+  // Create a new product
+  async createProduct(data: Omit<AnyProduct, 'id' | 'createdAt' | 'updatedAt'>) {
     const response = await api.post('', data);
     return response.data;
   },
 
-  // Update an existing gemstone
-  async updateGemstone(_id: string, data: Partial<Gemstone>) {
+  // Update an existing product
+  async updateProduct(_id: string, data: Partial<AnyProduct>) {
     const response = await api.put(``, data);
     return response.data;
   },
 
-  // Delete a gemstone
-  async deleteGemstone(id: string) {
+  // Delete a product
+  async deleteProduct(id: string) {
     const response = await api.delete(`${id}`);
     return response.data;
   },
-
-  // Upload media files
- 
 };

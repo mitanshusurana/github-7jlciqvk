@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Filter, X, Search, ArrowDownAZ, ArrowUpZA, Calendar } from 'lucide-react';
 import { FilterParams, Occasion, DesignType, StockStatus } from '../../types';
 
-interface GemstoneFilterProps {
+interface ProductFilterProps {
   onFilterChange: (filters: FilterParams) => void;
   categories: string[];
   tags: string[];
@@ -11,7 +11,7 @@ interface GemstoneFilterProps {
   stockStatuses: StockStatus[];
 }
 
-const GemstoneFilter: React.FC<GemstoneFilterProps> = ({ 
+const ProductFilter: React.FC<ProductFilterProps> = ({
   onFilterChange, 
   categories, 
   tags,
@@ -112,7 +112,7 @@ const GemstoneFilter: React.FC<GemstoneFilterProps> = ({
             value={filters.search}
             onChange={handleInputChange}
             className="form-input pl-10 w-full"
-            placeholder="Search gemstones..."
+            placeholder="Search products..."
           />
         </div>
         

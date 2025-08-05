@@ -1,102 +1,8 @@
-// Enums for new fields
-export type Shape = 'Round' | 'Princess' | 'Emerald' | 'Asscher' | 'Marquise' | 'Oval' | 'Radiant' | 'Pear' | 'Heart' | 'Cushion' | 'Other';
-export type Transparency = 'Transparent' | 'Translucent' | 'Opaque';
-export type Lustre = 'Vitreous' | 'Resinous' | 'Pearly' | 'Greasy' | 'Silky' | 'Waxy' | 'Dull' | 'Metallic';
-export type DesignType = 'Antique' | 'Modern' | 'Temple' | 'Classic' | 'Contemporary' | 'Ethnic' | 'Other';
-export type Occasion = 'Bridal' | 'Daily Wear' | 'Festive' | 'Gift' | 'Work Wear' | 'Party Wear' | 'Other';
+// ===================================================================
+// Base Product Interface & Core Types
+// ===================================================================
+
 export type StockStatus = 'In Stock' | 'Out of Stock' | 'Made-to-Order' | 'On Hold';
-export type AntiqueEra = 'Pre-1800s' | 'Victorian (1837-1901)' | 'Art Nouveau (1890-1910)' | 'Edwardian (1901-1910)' | 'Art Deco (1920-1935)' | 'Retro (1935-1950)' | 'Mid-Century (1950s)' | 'Modern (Post-1960)' | 'Other';
-export type RegionalStyle = 'Rajasthani' | 'South Indian' | 'Mughal' | 'Nizami' | 'Pahari' | 'Other';
-
-export interface Gemstone {
-  id: string;
-  name: string;
-  category: string;
-  subCategory: string;
-  itemType: string;
-
-  // Retained Original Fields
-  weight: number; // in carats for gemstones, grams for metals
-  dimensions: {
-    length: number; // in mm
-    width: number; // in mm
-    height: number; // in mm
-  };
-  color: string;
-  clarity: string;
-  cut: string;
-  origin: string;
-  treatment: string;
-  certification: string; // Certification No.
-  acquisitionDate?: string;
-  acquisitionPrice?: number;
-  seller?: string;
-  estimatedValue?: number;
-  notes: string;
-  images: string[];
-  video?: string;
-  qrCode: string;
-
-  // Consolidated and Renamed Fields
-  shape?: Shape | string;
-  gemVariety?: string; // Replaces 'type' for clarity
-  stoneCount?: number; // Replaces itemSpecificDetails.numberOfPieces
-  ringSize?: string; // Replaces itemSpecificDetails.size
-  totalCaratWeight?: number; // Replaces itemSpecificDetails.totalWeight for jewelry
-
-  // A. Visual & Descriptive
-  shortDescription?: string;
-  detailedDescription?: string;
-  transparency?: Transparency | string;
-  lustre?: Lustre | string;
-  designType?: DesignType | string;
-  occasion?: Occasion | string;
-
-  // B. Trust-Building & Info Transparency
-  treatmentDetails?: string;
-  certificationUpload?: string; // URL to certificate image/PDF
-  returnPolicy?: string;
-  warrantyInfo?: string;
-  careInstructions?: string;
-  zodiacRelevance?: string;
-  inTheBox?: string[];
-
-  // C. E-Commerce Ready
-  mrp?: number;
-  sellingPrice?: number;
-  discountLabel?: string;
-  stockStatus?: StockStatus | string;
-  deliveryTimeEstimate?: string;
-  customOrderAvailable?: boolean;
-  bulkInquiryEnabled?: boolean;
-
-  // D. Antique & Heritage Jewelry Additions
-  antiqueEra?: AntiqueEra | string;
-  regionalStyle?: RegionalStyle | string;
-  materialComposition?: string; // E.g., "22K Gold, Uncut Diamonds, Emeralds"
-  craftsmanshipDetail?: string;
-  artisanOrWorkshop?: string;
-
-  // Original metadata
-  tags: string[];
-  createdAt: string;
-  updatedAt:string;
-  createdBy: string;
-  lastEditedBy: string;
-  auditTrail: AuditEvent[];
-
-  // Deprecating itemSpecificDetails in favor of top-level optional fields
-  itemSpecificDetails?: {
-    purity?: string;
-    metalType?: string;
-    averageWeight?: number;
-    setting?: string;
-    quality?: string;
-    carving?: string;
-    artisan?: string;
-    style?: string;
-  };
-}
 
 export interface AuditEvent {
   timestamp: string;
@@ -105,6 +11,223 @@ export interface AuditEvent {
   changes?: Record<string, { before: any; after: any }>;
 }
 
+/**
+ * A base interface for all products. Contains fields common to all items.
+ */
+export interface Product {
+  id: string; // Unique identifier (SKU)
+  name: string;
+  shortDescription?: string;
+  detailedDescription?: string;
+  images: string[];
+  video?: string;
+  qrCode?: string;
+  tags?: string[];
+  collection?: string; // e.g., "Elsa Peretti", "BlueStone Man"
+  certification?: string[]; // e.g., ["BIS", "IGI"]
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  lastEditedBy: string;
+  auditTrail: AuditEvent[];
+
+  // Common e-commerce fields
+  mrp?: number;
+  sellingPrice?: number;
+  discountLabel?: string;
+  stockStatus?: StockStatus | string;
+  deliveryTimeEstimate?: string;
+  customOrderAvailable?: boolean;
+  bulkInquiryEnabled?: boolean;
+}
+
+// ===================================================================
+// Gemstone & Metal Specific Enums and Types
+// ===================================================================
+
+// As per Vedic literature (Navaratna)
+export type PreciousGemType =
+  | 'Ruby' // Sun
+  | 'Pearl' // Moon
+  | 'Red Coral' // Mars
+  | 'Emerald' // Mercury
+  | 'Yellow Sapphire' // Jupiter
+  | 'Diamond' // Venus
+  | 'Blue Sapphire' // Saturn
+  | 'Hessonite' // Rahu
+  | "Cat's Eye"; // Ketu
+
+export type SemiPreciousGemType =
+  | 'Agate'
+  | 'Alexandrite'
+  | 'Amazonite'
+  | 'Amber'
+  | 'Amethyst'
+  | 'Ametrine'
+  | 'Andalusite'
+  | 'Apatite'
+  | 'Aquamarine'
+  | 'Aventurine'
+  | 'Azurite'
+  | 'Bloodstone'
+  | 'Carnelian'
+  | 'Chalcedony'
+  | 'Charoite'
+  | 'Chrysocolla'
+  | 'Chrysoprase'
+  | 'Citrine'
+  | 'Coral'
+  | 'Cordierite'
+  | 'Demantoid Garnet'
+  | 'Diopside'
+  | 'Dumortierite'
+  | 'Fluorite'
+  | 'Garnet'
+  | 'Heliodor'
+  | 'Hematite'
+  | 'Hemimorphite'
+  | 'Howlite'
+  | 'Iolite'
+  | 'Jadeite'
+  | 'Jasper'
+  | 'Kunzite'
+  | 'Kyanite'
+  | 'Labradorite'
+  | 'Lapis Lazuli'
+  | 'Larimar'
+  | 'Lepidolite'
+  | 'Malachite'
+  | 'Moonstone'
+  | 'Morganite'
+  | 'Nephrite'
+  | 'Obsidian'
+  | 'Onyx'
+  | 'Opal'
+  | 'Peridot'
+  | 'Prehnite'
+  | 'Pyrite'
+  | 'Quartz'
+  | 'Rhodochrosite'
+  | 'Rhodonite'
+  | 'Rose Quartz'
+  | 'Seraphinite'
+  | 'Serpentine'
+  | 'Smoky Quartz'
+  | 'Sodalite'
+  | 'Spinel'
+  | 'Sunstone'
+  | 'Tanzanite'
+  | 'Tiger\'s Eye'
+  | 'Topaz'
+  | 'Tourmaline'
+  | 'Turquoise'
+  | 'Zircon'
+  | 'Other';
+
+export type OrganicGemType = 'Pearl' | 'Amber' | 'Coral' | 'Jet' | 'Ivory' | 'Shell' | 'Other';
+
+export type PreciousMetalType = 'Gold' | 'Silver' | 'Platinum' | 'Palladium' | 'Rhodium' | 'Iridium' | 'Other';
+
+export type Shape = 'Round' | 'Princess' | 'Emerald' | 'Asscher' | 'Marquise' | 'Oval' | 'Radiant' | 'Pear' | 'Heart' | 'Cushion' | 'Other';
+export type Transparency = 'Transparent' | 'Translucent' | 'Opaque';
+export type Lustre = 'Vitreous' | 'Resinous' | 'Pearly' | 'Greasy' | 'Silky' | 'Waxy' | 'Dull' | 'Metallic';
+export type DesignType = 'Antique' | 'Modern' | 'Temple' | 'Classic' | 'Contemporary' | 'Ethnic' | 'Other';
+export type Occasion = 'Bridal' | 'Daily Wear' | 'Festive' | 'Gift' | 'Work Wear' | 'Party Wear' | 'Other';
+export type AntiqueEra = 'Pre-1800s' | 'Victorian (1837-1901)' | 'Art Nouveau (1890-1910)' | 'Edwardian (1901-1910)' | 'Art Deco (1920-1935)' | 'Retro (1935-1950)' | 'Mid-Century (1950s)' | 'Modern (Post-1960)' | 'Other';
+export type RegionalStyle = 'Rajasthani' | 'South Indian' | 'Mughal' | 'Nizami' | 'Pahari' | 'Other';
+
+// ===================================================================
+// Specialized Product Interfaces
+// ===================================================================
+
+/**
+ * For loose, individual gemstones.
+ */
+export interface LooseStone extends Product {
+  productType: 'LooseStone';
+  category: 'Precious Gemstones' | 'Semi-Precious Gemstones' | 'Organic Gems';
+  subCategory: PreciousGemType | SemiPreciousGemType | OrganicGemType | string;
+  weight: number; // in carats
+  dimensions: { length: number; width: number; height: number }; // in mm
+  color: string;
+  clarity: string;
+  cut: string;
+  shape: Shape | string;
+  origin: string;
+  treatment: string;
+  treatmentDetails?: string;
+  zodiacRelevance?: string;
+}
+
+/**
+ * For rough, uncut stones.
+ */
+export interface RoughStone extends Product {
+  productType: 'RoughStone';
+  category: 'Precious Gemstones' | 'Semi-Precious Gemstones';
+  subCategory: PreciousGemType | SemiPreciousGemType | string;
+  weight: number; // in grams
+  origin: string;
+  notes?: string;
+}
+
+/**
+ * For finished jewelry pieces.
+ */
+export interface Jewelry extends Product {
+  productType: 'Jewelry';
+  itemType: 'Ring' | 'Necklace' | 'Bracelet' | 'Earrings' | 'Pendant' | 'Brooch' | 'Carved Idol' | 'Antique Piece' | 'Custom Jewelry' | 'Watch' | 'Cufflinks' | 'Other';
+  designer?: string; // e.g., "Elsa Peretti"
+  designType?: DesignType | string;
+  occasion?: Occasion | string;
+
+  // Metal details
+  metalType: PreciousMetalType | string;
+  purity?: string;
+  metalWeight?: number; // in grams
+
+  // Gemstone details
+  gemstones: {
+    stone: PreciousGemType | SemiPreciousGemType | OrganicGemType | string;
+    weight: number; // carats
+    stoneCount: number;
+    clarity?: string;
+    cut?: string;
+    shape?: Shape | string;
+    stoneSize?: string; // e.g., "2.5 mm"
+    settingType?: string; // e.g., "Prong"
+    diamondQuality?: string; // e.g., "SI IJ"
+  }[];
+  totalCaratWeight?: number;
+
+  // Jewelry specific details
+  ringSize?: string;
+
+  // Antique details
+  antiqueEra?: AntiqueEra | string;
+  regionalStyle?: RegionalStyle | string;
+
+  // Craftsmanship
+  materialComposition?: string;
+  craftsmanshipDetail?: string;
+  artisanOrWorkshop?: string;
+}
+
+/**
+ * For precious metals in raw form.
+ */
+export interface Metal extends Product {
+  productType: 'Metal';
+  itemType: 'Metal Bar/Ingot' | 'Metal Sheet' | 'Metal Wire';
+  metalType: PreciousMetalType | string;
+  purity: string;
+  weight: number; // in grams
+}
+
+// A union type for all product types, to be used in the application
+export type AnyProduct = LooseStone | RoughStone | Jewelry | Metal;
+
+// Other existing interfaces
 export interface User {
   id: string;
   name: string;
@@ -144,8 +267,8 @@ export interface FilterParams {
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface PaginatedGemstones {
-  content: Gemstone[];
+export interface PaginatedProducts {
+  content: AnyProduct[];
   totalPages: number;
   totalElements: number;
   size: number;
@@ -157,101 +280,7 @@ export interface AnalyticsData {
   totalItems: number;
   itemsByCategory: Record<string, number>;
   itemsByType: Record<string, number>;
-  recentAdditions: Gemstone[];
+  recentAdditions: AnyProduct[];
   totalValue: number;
   valueByCategory: Record<string, number>;
 }
-
-// Updated categories for precious/semi-precious dealers
-export type Category = 
-  | 'Precious Gemstones' 
-  | 'Semi-Precious Gemstones' 
-  | 'Precious Metals'
-  | 'Organic Gems';
-
-// Item types for different business categories
-export type ItemType =
-  | 'Loose Gemstone'
-  | 'Gemstone Lot'
-  | 'Ring'
-  | 'Necklace'
-  | 'Bracelet'
-  | 'Earrings'
-  | 'Pendant'
-  | 'Brooch'
-  | 'Carved Idol'
-  | 'Rough Stone'
-  | 'Metal Bar/Ingot'
-  | 'Metal Sheet'
-  | 'Metal Wire'
-  | 'Antique Piece'
-  | 'Custom Jewelry'
-  | 'Watch'
-  | 'Cufflinks'
-  | 'Other';
-
-// Precious gemstones (The Big 4 + 5 others)
-export type PreciousGemType =
-  | 'Diamond'
-  | 'Ruby'
-  | 'Sapphire'
-  | 'Emerald'
-  | 'Tanzanite'
-  | 'Paraiba Tourmaline'
-  | 'Jadeite'
-  | 'Red Beryl'
-  | 'Taaffeite';
-
-// Semi-precious gemstones
-export type SemiPreciousGemType =
-  | 'Amethyst'
-  | 'Aquamarine'
-  | 'Citrine'
-  | 'Garnet'
-  | 'Peridot'
-  | 'Topaz'
-  | 'Tourmaline'
-  | 'Spinel'
-  | 'Moonstone'
-  | 'Labradorite'
-  | 'Amazonite'
-  | 'Aventurine'
-  | 'Carnelian'
-  | 'Chalcedony'
-  | 'Chrysoprase'
-  | 'Jasper'
-  | 'Onyx'
-  | 'Agate'
-  | 'Quartz'
-  | 'Rose Quartz'
-  | 'Smoky Quartz'
-  | 'Tiger Eye'
-  | 'Turquoise'
-  | 'Lapis Lazuli'
-  | 'Malachite'
-  | 'Sodalite'
-  | 'Fluorite'
-  | 'Iolite'
-  | 'Kyanite'
-  | 'Andalusite'
-  | 'Other';
-
-// Organic gems
-export type OrganicGemType =
-  | 'Pearl'
-  | 'Amber'
-  | 'Coral'
-  | 'Jet'
-  | 'Ivory'
-  | 'Shell'
-  | 'Other';
-
-// Precious metals
-export type PreciousMetalType =
-  | 'Gold'
-  | 'Silver'
-  | 'Platinum'
-  | 'Palladium'
-  | 'Rhodium'
-  | 'Iridium'
-  | 'Other';
