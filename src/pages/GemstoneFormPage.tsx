@@ -61,21 +61,30 @@ const GemstoneFormPage: React.FC = () => {
   const [loading, setLoading] = useState(!!id);
   const [productType, setProductType] = useState<'Jewelry' | 'LooseStone' | 'RoughStone' | 'Metal'>('Jewelry');
 
-  const preciousGemTypes: PreciousGemType[] = [
-    'Ruby',
-    'Pearl',
-    'Red Coral',
-    'Emerald',
-    'Yellow Sapphire',
-    'Diamond',
-    'Blue Sapphire',
-    'Hessonite',
-    "Cat's Eye",
-  ];
+  const {
+    getDesignTypes,
+    getOccasions,
+    getStockStatuses,
+    getPreciousGemTypes,
+    getSemiPreciousGemTypes,
+    getPreciousMetalTypes,
+  } = useProducts();
 
-  const semiPreciousGemTypes: SemiPreciousGemType[] = [
-    'Agate', 'Alexandrite', 'Amazonite', 'Amber', 'Amethyst', 'Ametrine', 'Andalusite', 'Apatite', 'Aquamarine', 'Aventurine', 'Azurite', 'Bloodstone', 'Carnelian', 'Chalcedony', 'Charoite', 'Chrysocolla', 'Chrysoprase', 'Citrine', 'Coral', 'Cordierite', 'Demantoid Garnet', 'Diopside', 'Dumortierite', 'Fluorite', 'Garnet', 'Heliodor', 'Hematite', 'Hemimorphite', 'Howlite', 'Iolite', 'Jadeite', 'Jasper', 'Kunzite', 'Kyanite', 'Labradorite', 'Lapis Lazuli', 'Larimar', 'Lepidolite', 'Malachite', 'Moonstone', 'Morganite', 'Nephrite', 'Obsidian', 'Onyx', 'Opal', 'Peridot', 'Prehnite', 'Pyrite', 'Quartz', 'Rhodochrosite', 'Rhodonite', 'Rose Quartz', 'Seraphinite', 'Serpentine', 'Smoky Quartz', 'Sodalite', 'Spinel', 'Sunstone', 'Tanzanite', "Tiger's Eye", 'Topaz', 'Tourmaline', 'Turquoise', 'Zircon', 'Other'
-  ];
+  const [designTypeOptions, setDesignTypeOptions] = useState<DesignType[]>([]);
+  const [occasionOptions, setOccasionOptions] = useState<Occasion[]>([]);
+  const [stockStatusOptions, setStockStatusOptions] = useState<StockStatus[]>([]);
+  const [preciousGemTypes, setPreciousGemTypes] = useState<PreciousGemType[]>([]);
+  const [semiPreciousGemTypes, setSemiPreciousGemTypes] = useState<SemiPreciousGemType[]>([]);
+  const [preciousMetalTypes, setPreciousMetalTypes] = useState<PreciousMetalType[]>([]);
+
+  useEffect(() => {
+    setDesignTypeOptions(getDesignTypes());
+    setOccasionOptions(getOccasions());
+    setStockStatusOptions(getStockStatuses());
+    setPreciousGemTypes(getPreciousGemTypes());
+    setSemiPreciousGemTypes(getSemiPreciousGemTypes());
+    setPreciousMetalTypes(getPreciousMetalTypes());
+  }, [getDesignTypes, getOccasions, getStockStatuses, getPreciousGemTypes, getSemiPreciousGemTypes, getPreciousMetalTypes]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -237,14 +246,14 @@ const GemstoneFormPage: React.FC = () => {
                         <label htmlFor="designType" className="form-label">Design Type</label>
                         <Field as="select" name="designType" className="form-select">
                           <option value="">Select design type</option>
-                          {/* {designTypeOptions.map(dt => <option key={dt} value={dt}>{dt}</option>)} */}
+                          {designTypeOptions.map(dt => <option key={dt} value={dt}>{dt}</option>)}
                         </Field>
                       </div>
                       <div>
                         <label htmlFor="occasion" className="form-label">Occasion</label>
                         <Field as="select" name="occasion" className="form-select">
                           <option value="">Select occasion</option>
-                          {/* {occasionOptions.map(o => <option key={o} value={o}>{o}</option>)} */}
+                          {occasionOptions.map(o => <option key={o} value={o}>{o}</option>)}
                         </Field>
                       </div>
                     </div>
@@ -255,8 +264,8 @@ const GemstoneFormPage: React.FC = () => {
                       <div>
                         <label htmlFor="metalType" className="form-label">Metal Type</label>
                         <Field as="select" name="metalType" className="form-select">
-                          {/* <option value="">Select metal type</option>
-                          {preciousMetalTypes.map(mt => <option key={mt} value={mt}>{mt}</option>)} */}
+                          <option value="">Select metal type</option>
+                          {preciousMetalTypes.map(mt => <option key={mt} value={mt}>{mt}</option>)}
                         </Field>
                       </div>
                       <div>
@@ -338,8 +347,8 @@ const GemstoneFormPage: React.FC = () => {
                     <div>
                       <label htmlFor="metalType" className="form-label">Metal Type</label>
                       <Field as="select" name="metalType" className="form-select">
-                        {/* <option value="">Select metal type</option>
-                        {preciousMetalTypes.map(mt => <option key={mt} value={mt}>{mt}</option>)} */}
+                        <option value="">Select metal type</option>
+                        {preciousMetalTypes.map(mt => <option key={mt} value={mt}>{mt}</option>)}
                       </Field>
                     </div>
                     <div>
@@ -394,7 +403,8 @@ const GemstoneFormPage: React.FC = () => {
                   <div>
                     <label htmlFor="stockStatus" className="form-label">Stock Status</label>
                     <Field as="select" name="stockStatus" className="form-select">
-                      {/* {stockStatusOptions.map(ss => <option key={ss} value={ss}>{ss}</option>)} */}
+                      <option value="">Select stock status</option>
+                      {stockStatusOptions.map(ss => <option key={ss} value={ss}>{ss}</option>)}
                     </Field>
                   </div>
                 </div>

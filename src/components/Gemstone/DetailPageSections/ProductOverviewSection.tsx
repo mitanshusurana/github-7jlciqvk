@@ -21,6 +21,7 @@ const ProductOverviewSection: React.FC<ProductOverviewSectionProps> = ({ gemston
     <div className="card p-6">
       <h3 className="text-xl font-semibold text-neutral-900 mb-4">Product Overview</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <DetailItem label="SKU" value={gemstone.sku} />
         <DetailItem label="Shape" value={gemstone.shape} />
         <DetailItem label="Weight" value={formatWeight(gemstone.weight)} />
         <DetailItem label="Stone Count" value={gemstone.stoneCount} />

@@ -39,7 +39,7 @@ const InventoryPage: React.FC = () => {
     setOccasions(getOccasions());
     setDesignTypes(getDesignTypes());
     setStockStatuses(getStockStatuses());
-  }, [products, getCategories, getTags, getOccasions, getDesignTypes, getStockStatuses]);
+  }, [getCategories, getTags, getOccasions, getDesignTypes, getStockStatuses]);
   
   const handleFilterChange = (filters: FilterParams) => {
     setFilters(filters);
