@@ -74,6 +74,16 @@ export const Header: React.FC = () => {
                   </Link>
                 </div>
               </div>
+              <Link
+                to="/clients"
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
+                  isActive('/clients')
+                    ? 'border-primary-600 text-neutral-900'
+                    : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+                }`}
+              >
+                Clients
+              </Link>
               <Link 
                 to="/analytics" 
                 className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
@@ -164,6 +174,17 @@ export const Header: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               Advanced Reports
+            </Link>
+            <Link
+              to="/clients"
+              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                isActive('/clients')
+                  ? 'bg-primary-50 border-primary-600 text-primary-700'
+                  : 'border-transparent text-neutral-500 hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-700'
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Clients
             </Link>
             <Link
               to="/analytics"

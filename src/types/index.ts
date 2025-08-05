@@ -39,6 +39,7 @@ export interface Product {
   deliveryTimeEstimate?: string;
   customOrderAvailable?: boolean;
   bulkInquiryEnabled?: boolean;
+  clientId?: string;
 }
 
 // ===================================================================
@@ -283,4 +284,20 @@ export interface AnalyticsData {
   recentAdditions: AnyProduct[];
   totalValue: number;
   valueByCategory: Record<string, number>;
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
