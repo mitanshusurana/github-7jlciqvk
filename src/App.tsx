@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import MainLayout from './components/Layout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import InventoryPage from './pages/InventoryPage';
-import GemstoneDetailPage from './pages/GemstoneDetailPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 import GemstoneFormPage from './pages/GemstoneFormPage';
 import ReportsPage from './pages/ReportsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
@@ -26,7 +26,7 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="inventory" element={<InventoryPage />} />
-        <Route path="product/:id" element={<GemstoneDetailPage />} />
+        <Route path="product/:id" element={<ProductDetailPage />} />
         <Route path="product/new" element={<GemstoneFormPage />} />
         <Route path="product/:id/edit" element={<GemstoneFormPage />} />
         <Route path="product/:id/qr" element={<QrCodePage />} />

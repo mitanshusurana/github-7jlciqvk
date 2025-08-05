@@ -276,4 +276,4 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   );
 };
 
-export default GemstoneFilter;
+export default ProductFilter;

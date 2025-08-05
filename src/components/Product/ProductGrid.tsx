@@ -1,17 +1,17 @@
 import React from 'react';
-import { Gemstone } from '../../types';
-import GemstoneCard from './GemstoneCard';
+import { Product } from '../../types';
+import ProductCard from './ProductCard';
 import { useInView } from 'react-intersection-observer';
 
-interface GemstoneGridProps {
-  gemstones: Gemstone[];
+interface ProductGridProps {
+  products: Product[];
   loading?: boolean;
   onLoadMore?: () => void;
   hasMore?: boolean;
 }
 
-const GemstoneGrid: React.FC<GemstoneGridProps> = ({ 
-  gemstones = [], 
+const ProductGrid: React.FC<ProductGridProps> = ({
+  products = [],
   loading = false, 
   onLoadMore,
   hasMore = false
@@ -28,11 +28,11 @@ const GemstoneGrid: React.FC<GemstoneGridProps> = ({
     }
   }, [inView, hasMore, onLoadMore, loading]);
 
-  if (gemstones.length === 0 && !loading) {
+  if (products.length === 0 && !loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h3 className="mt-2 text-lg font-medium text-neutral-900">No gemstones found</h3>
+          <h3 className="mt-2 text-lg font-medium text-neutral-900">No products found</h3>
           <p className="mt-1 text-sm text-neutral-500">
             Try adjusting your search or filter criteria.
           </p>
@@ -43,8 +43,8 @@ const GemstoneGrid: React.FC<GemstoneGridProps> = ({
 
   return (
     <div className="gem-grid animate-fade-in">
-      {(Array.isArray(gemstones) ? gemstones : []).map((gemstone) => (
-        <GemstoneCard key={gemstone.id} gemstone={gemstone} />
+      {(Array.isArray(products) ? products : []).map((product) => (
+        <ProductCard key={product.id} product={product} />
       ))}
       
       {/* Loading skeleton cards */}
@@ -70,4 +70,4 @@ const GemstoneGrid: React.FC<GemstoneGridProps> = ({
   );
 };
 
-export default GemstoneGrid;
+export default ProductGrid;

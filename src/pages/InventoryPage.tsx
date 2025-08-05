@@ -2,14 +2,14 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, QrCode } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
-import useGemstones from '../hooks/useGemstones';
-import GemstoneGrid from '../components/Gemstone/GemstoneGrid';
-import GemstoneFilter from '../components/Gemstone/GemstoneFilter';
+import useProducts from '../hooks/useProducts';
+import ProductGrid from '../components/Product/ProductGrid';
+import ProductFilter from '../components/Product/ProductFilter';
 import { FilterParams, Occasion, DesignType, StockStatus } from '../types';
 
 const InventoryPage: React.FC = () => {
   const { 
-    gemstones, 
+    products,
     loading, 
     hasMore, 
     loadMore, 
@@ -19,7 +19,7 @@ const InventoryPage: React.FC = () => {
     getOccasions,
     getDesignTypes,
     getStockStatuses
-  } = useGemstones();
+  } = useProducts();
   
   const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
@@ -39,7 +39,7 @@ const InventoryPage: React.FC = () => {
     setOccasions(getOccasions());
     setDesignTypes(getDesignTypes());
     setStockStatuses(getStockStatuses());
-  }, [gemstones, getCategories, getTags, getOccasions, getDesignTypes, getStockStatuses]);
+  }, [products, getCategories, getTags, getOccasions, getDesignTypes, getStockStatuses]);
   
   const handleFilterChange = (filters: FilterParams) => {
     setFilters(filters);
@@ -84,7 +84,7 @@ const InventoryPage: React.FC = () => {
                 if (cancelled) return;
                 console.log('QR decoded value:', decodedText);
                 setShowQrScanner(false);
-                navigate(`/gemstone/${decodedText}`);
+                navigate(`/product/${decodedText}`);
                 setTimeout(() => {
                   stopAndClearScanner();
                 }, 300);
@@ -113,9 +113,9 @@ const InventoryPage: React.FC = () => {
     <div className="container-page">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900">Gemstone Inventory</h1>
+          <h1 className="text-3xl font-bold text-neutral-900">Product Inventory</h1>
           <p className="mt-1 text-neutral-500">
-            Browse, search, and manage your gemstone collection
+            Browse, search, and manage your product collection
           </p>
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-2">
@@ -130,11 +130,11 @@ const InventoryPage: React.FC = () => {
             Scan QR
           </button>
           <Link
-            to="/gemstone/new"
+            to="/product/new"
             className="btn-primary flex items-center space-x-1"
           >
             <Plus className="h-4 w-4" />
-            <span>Add New Gemstone</span>
+            <span>Add New Product</span>
           </Link>
         </div>
       </div>
@@ -152,7 +152,7 @@ const InventoryPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <GemstoneFilter 
+      <ProductFilter
         onFilterChange={handleFilterChange}
         categories={categories}
         tags={tags}
@@ -162,8 +162,8 @@ const InventoryPage: React.FC = () => {
       />
       
       {/* Grid view */}
-      <GemstoneGrid 
-        gemstones={gemstones.content ?? []}
+      <ProductGrid
+        products={products.content ?? []}
         loading={loading}
         hasMore={hasMore}
         onLoadMore={loadMore}

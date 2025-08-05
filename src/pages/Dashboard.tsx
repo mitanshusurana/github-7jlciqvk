@@ -1,15 +1,15 @@
 
 import { Link } from 'react-router-dom';
 import { Diamond, Package, ClipboardList, BarChart3, Search, Plus } from 'lucide-react';
-import useGemstones from '../hooks/useGemstones';
-import GemstoneCard from '../components/Gemstone/GemstoneCard';
-import { Gemstone } from '../types';
+import useProducts from '../hooks/useProducts';
+import ProductCard from '../components/Product/ProductCard';
+import { Product } from '../types';
 
 const Dashboard = () => {
-  const { gemstones = { content: [] }, loading } = useGemstones();
+  const { products = { content: [] }, loading } = useProducts();
   
-  // Show only the 4 most recent gemstones (or fewer if less exist)
-  const recentGemstones = (gemstones.content ?? []).slice(0, 4);
+  // Show only the 4 most recent products (or fewer if less exist)
+  const recentProducts = (products.content ?? []).slice(0, 4);
 
   return (
     <div className="container-page">
@@ -17,16 +17,16 @@ const Dashboard = () => {
         <div>
           <h1 className="text-3xl font-bold text-neutral-900">Welcome to GemTracker</h1>
           <p className="mt-1 text-neutral-500">
-            Manage your gemstone inventory efficiently
+            Manage your product inventory efficiently
           </p>
         </div>
         <div className="mt-4 md:mt-0">
           <Link
-            to="/gemstone/new"
+            to="/product/new"
             className="btn-primary flex items-center space-x-1"
           >
             <Plus className="h-4 w-4" />
-            <span>Add New Gemstone</span>
+            <span>Add New Product</span>
           </Link>
         </div>
       </div>
@@ -38,8 +38,8 @@ const Dashboard = () => {
             <Diamond className="h-6 w-6 text-primary-600" />
           </div>
           <div>
-            <p className="text-sm font-medium text-neutral-500">Total Gemstones</p>
-            <p className="text-2xl font-semibold text-neutral-900">{loading ? '...' : (gemstones.content ?? []).length}</p>
+            <p className="text-sm font-medium text-neutral-500">Total Products</p>
+            <p className="text-2xl font-semibold text-neutral-900">{loading ? '...' : (products.content ?? []).length}</p>
           </div>
         </div>
         
@@ -83,19 +83,19 @@ const Dashboard = () => {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-neutral-900">Browse Inventory</h3>
-              <p className="text-sm text-neutral-500">Search and filter your gemstone collection</p>
+              <p className="text-sm text-neutral-500">Search and filter your product collection</p>
             </div>
           </div>
         </Link>
         
-        <Link to="/gemstone/new" className="card p-6 hover:bg-secondary-50 transition-colors">
+        <Link to="/product/new" className="card p-6 hover:bg-secondary-50 transition-colors">
           <div className="flex items-center">
             <div className="rounded-full bg-secondary-100 p-3 mr-4">
               <Plus className="h-6 w-6 text-secondary-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-neutral-900">Add Gemstone</h3>
-              <p className="text-sm text-neutral-500">Create a new gemstone record</p>
+              <h3 className="text-lg font-semibold text-neutral-900">Add Product</h3>
+              <p className="text-sm text-neutral-500">Create a new product record</p>
             </div>
           </div>
         </Link>
@@ -113,10 +113,10 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      {/* Recent gemstones */}
+      {/* Recent products */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-neutral-900">Recent Gemstones</h2>
+          <h2 className="text-xl font-semibold text-neutral-900">Recent Products</h2>
           <Link to="/inventory" className="text-sm font-medium text-primary-600 hover:text-primary-800">
             View all
           </Link>
@@ -137,15 +137,15 @@ const Dashboard = () => {
                 </div>
               </div>
             ))
-          ) : recentGemstones.length > 0 ? (
-            recentGemstones.map((gemstone: Gemstone) => (
-              <GemstoneCard key={gemstone.id} gemstone={gemstone} />
+          ) : recentProducts.length > 0 ? (
+            recentProducts.map((product: Product) => (
+              <ProductCard key={product.id} product={product} />
             ))
           ) : (
             <div className="col-span-full text-center py-8">
-              <p className="text-neutral-500">No gemstones found</p>
-              <Link to="/gemstone/new" className="btn-primary mt-4 inline-flex">
-                Add your first gemstone
+              <p className="text-neutral-500">No products found</p>
+              <Link to="/product/new" className="btn-primary mt-4 inline-flex">
+                Add your first product
               </Link>
             </div>
           )}
@@ -160,9 +160,9 @@ const Dashboard = () => {
             <div className="rounded-full bg-primary-100 w-10 h-10 flex items-center justify-center mb-3">
               <span className="font-semibold text-primary-600">1</span>
             </div>
-            <h3 className="text-lg font-medium text-neutral-800 mb-1">Add Gemstones</h3>
+            <h3 className="text-lg font-medium text-neutral-800 mb-1">Add Products</h3>
             <p className="text-neutral-500 text-sm">
-              Start by adding your gemstones to the inventory with details and images.
+              Start by adding your products to the inventory with details and images.
             </p>
           </div>
           
@@ -172,7 +172,7 @@ const Dashboard = () => {
             </div>
             <h3 className="text-lg font-medium text-neutral-800 mb-1">Organize and Tag</h3>
             <p className="text-neutral-500 text-sm">
-              Categorize your gemstones and add tags to make them easy to find.
+              Categorize your products and add tags to make them easy to find.
             </p>
           </div>
           
@@ -182,7 +182,7 @@ const Dashboard = () => {
             </div>
             <h3 className="text-lg font-medium text-neutral-800 mb-1">Generate QR Codes</h3>
             <p className="text-neutral-500 text-sm">
-              Create QR codes for each gemstone for easy identification and tracking.
+              Create QR codes for each product for easy identification and tracking.
             </p>
           </div>
         </div>
