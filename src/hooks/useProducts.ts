@@ -165,16 +165,6 @@ export const useProducts = () => {
     }
   }, [fetchProducts]);
 
-  // Load more products
-  const loadMore = useCallback(() => {
-    if (pagination.page < pagination.totalPages) {
-      setPagination((prev) => ({
-        ...prev,
-        page: prev.page + 1,
-      }));
-    }
-  }, [pagination.page, pagination.totalPages]);
-
   // Get all categories
   const getCategories = useCallback(() => {
     const categories = new Set<string>();
@@ -209,13 +199,55 @@ export const useProducts = () => {
     return Array.from(stockStatuses);
   }, [products]);
 
+  const getPreciousGemTypes = useCallback(() => {
+    const preciousGems = new Set<string>();
+    (products.content ?? []).forEach((p) => {
+      if (p.productType === 'Jewelry') {
+        p.gemstones?.forEach(gem => {
+          if (gem.stone) preciousGems.add(gem.stone)
+        });
+      } else if ((p.productType === 'LooseStone' || p.productType === 'RoughStone') && p.category === 'Precious Gemstones') {
+        if (p.subCategory) preciousGems.add(p.subCategory)
+      }
+    });
+    return Array.from(preciousGems);
+  }, [products]);
+
+  const getSemiPreciousGemTypes = useCallback(() => {
+    const semiPreciousGems = new Set<string>();
+    (products.content ?? []).forEach((p) => {
+      if (p.productType === 'Jewelry') {
+        p.gemstones?.forEach(gem => {
+          if (gem.stone) semiPreciousGems.add(gem.stone)
+        });
+      } else if ((p.productType === 'LooseStone' || p.productType === 'RoughStone') && p.category === 'Semi-Precious Gemstones') {
+        if (p.subCategory) semiPreciousGems.add(p.subCategory)
+      }
+    });
+    return Array.from(semiPreciousGems);
+  }, [products]);
+
+  const getPreciousMetalTypes = useCallback(() => {
+    const metalTypes = new Set<string>();
+    (products.content ?? []).forEach((p) => {
+      if ((p.productType === 'Jewelry' || p.productType === 'Metal') && p.metalType) {
+        metalTypes.add(p.metalType);
+      }
+    });
+    return Array.from(metalTypes);
+  }, [products]);
+
   return {
     products,
     loading,
     error,
     pagination,
     hasMore: pagination.page < pagination.totalPages,
-    loadMore: () => setPagination(prev => ({ ...prev, page: prev.page + 1 })),
+    loadMore: useCallback(() => {
+      if (pagination.page < pagination.totalPages) {
+        setPagination(prev => ({ ...prev, page: prev.page + 1 }));
+      }
+    }, [pagination.page, pagination.totalPages]),
     filters,
     setFilters,
     addProduct,
@@ -227,6 +259,9 @@ export const useProducts = () => {
     getOccasions,
     getDesignTypes,
     getStockStatuses,
+    getPreciousGemTypes,
+    getSemiPreciousGemTypes,
+    getPreciousMetalTypes,
     refresh: fetchProducts,
   };
 };
