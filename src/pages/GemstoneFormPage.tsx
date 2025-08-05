@@ -27,6 +27,14 @@ import {
 } from '../types';
 import { uploadService } from '../services/uploadService';
 import { Html5Qrcode } from 'html5-qrcode';
+import {
+  PRECIOUS_GEMS,
+  SEMI_PRECIOUS_GEMS,
+  PRECIOUS_METALS,
+  DESIGN_TYPES,
+  OCCASIONS,
+  STOCK_STATUSES,
+} from '../utils/constants';
 
 // Collapsible Section Component
 const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; initialOpen?: boolean }> = ({ title, children, initialOpen = true }) => {
@@ -60,31 +68,6 @@ const GemstoneFormPage: React.FC = () => {
   const [initialValues, setInitialValues] = useState<AnyProduct | null>(null);
   const [loading, setLoading] = useState(!!id);
   const [productType, setProductType] = useState<'Jewelry' | 'LooseStone' | 'RoughStone' | 'Metal'>('Jewelry');
-
-  const {
-    getDesignTypes,
-    getOccasions,
-    getStockStatuses,
-    getPreciousGemTypes,
-    getSemiPreciousGemTypes,
-    getPreciousMetalTypes,
-  } = useProducts();
-
-  const [designTypeOptions, setDesignTypeOptions] = useState<DesignType[]>([]);
-  const [occasionOptions, setOccasionOptions] = useState<Occasion[]>([]);
-  const [stockStatusOptions, setStockStatusOptions] = useState<StockStatus[]>([]);
-  const [preciousGemTypes, setPreciousGemTypes] = useState<PreciousGemType[]>([]);
-  const [semiPreciousGemTypes, setSemiPreciousGemTypes] = useState<SemiPreciousGemType[]>([]);
-  const [preciousMetalTypes, setPreciousMetalTypes] = useState<PreciousMetalType[]>([]);
-
-  useEffect(() => {
-    setDesignTypeOptions(getDesignTypes());
-    setOccasionOptions(getOccasions());
-    setStockStatusOptions(getStockStatuses());
-    setPreciousGemTypes(getPreciousGemTypes());
-    setSemiPreciousGemTypes(getSemiPreciousGemTypes());
-    setPreciousMetalTypes(getPreciousMetalTypes());
-  }, [getDesignTypes, getOccasions, getStockStatuses, getPreciousGemTypes, getSemiPreciousGemTypes, getPreciousMetalTypes]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -227,6 +210,69 @@ const GemstoneFormPage: React.FC = () => {
                     <Field name="id" className="form-input" placeholder="Unique identifier" />
                     <ErrorMessage name="id" component="div" className="text-error-600 text-sm mt-1" />
                   </div>
+                  {productType === 'Jewelry' && (
+                    <div>
+                      <label htmlFor="itemType" className="form-label">Item Type</label>
+                      <Field as="select" name="itemType" className="form-select">
+                        <option value="">Select item type</option>
+                        <option value="Ring">Ring</option>
+                        <option value="Necklace">Necklace</option>
+                        <option value="Bracelet">Bracelet</option>
+                        <option value="Earrings">Earrings</option>
+                        <option value="Pendant">Pendant</option>
+                        <option value="Brooch">Brooch</option>
+                        <option value="Carved Idol">Carved Idol</option>
+                        <option value="Antique Piece">Antique Piece</option>
+                        <option value="Custom Jewelry">Custom Jewelry</option>
+                        <option value="Watch">Watch</option>
+                        <option value="Cufflinks">Cufflinks</option>
+                        <option value="Other">Other</option>
+                      </Field>
+                    </div>
+                  )}
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection title="Media Upload">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="form-label">Images</label>
+                    <input
+                      type="file"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setSelectedImages(files);
+                        const urls = files.map(file => URL.createObjectURL(file));
+                        setImagePreviewUrls(urls);
+                      }}
+                      className="form-input"
+                    />
+                    <div className="mt-4 flex flex-wrap gap-4">
+                      {imagePreviewUrls.map(url => (
+                        <img key={url} src={url} alt="preview" className="w-24 h-24 object-cover rounded-md" />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="form-label">Video</label>
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setSelectedVideo(file);
+                          setVideoPreviewUrl(URL.createObjectURL(file));
+                        }
+                      }}
+                      className="form-input"
+                    />
+                    {videoPreviewUrl && (
+                      <div className="mt-4">
+                        <video src={videoPreviewUrl} controls className="w-full rounded-md" />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CollapsibleSection>
 
@@ -246,14 +292,14 @@ const GemstoneFormPage: React.FC = () => {
                         <label htmlFor="designType" className="form-label">Design Type</label>
                         <Field as="select" name="designType" className="form-select">
                           <option value="">Select design type</option>
-                          {designTypeOptions.map(dt => <option key={dt} value={dt}>{dt}</option>)}
+                          {DESIGN_TYPES.map(dt => <option key={dt} value={dt}>{dt}</option>)}
                         </Field>
                       </div>
                       <div>
                         <label htmlFor="occasion" className="form-label">Occasion</label>
                         <Field as="select" name="occasion" className="form-select">
                           <option value="">Select occasion</option>
-                          {occasionOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                          {OCCASIONS.map(o => <option key={o} value={o}>{o}</option>)}
                         </Field>
                       </div>
                     </div>
@@ -265,7 +311,7 @@ const GemstoneFormPage: React.FC = () => {
                         <label htmlFor="metalType" className="form-label">Metal Type</label>
                         <Field as="select" name="metalType" className="form-select">
                           <option value="">Select metal type</option>
-                          {preciousMetalTypes.map(mt => <option key={mt} value={mt}>{mt}</option>)}
+                          {PRECIOUS_METALS.map(mt => <option key={mt} value={mt}>{mt}</option>)}
                         </Field>
                       </div>
                       <div>
@@ -288,7 +334,15 @@ const GemstoneFormPage: React.FC = () => {
                           <div className="space-y-4">
                             {form.values.gemstones?.map((gemstone: any, index: number) => (
                               <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-md">
-                                <Field name={`gemstones.${index}.stone`} placeholder="Stone Type" className="form-input" />
+                              <Field as="select" name={`gemstones.${index}.stone`} className="form-select">
+                                <option value="">Select stone</option>
+                                <optgroup label="Precious">
+                                  {PRECIOUS_GEMS.map(g => <option key={g} value={g}>{g}</option>)}
+                                </optgroup>
+                                <optgroup label="Semi-Precious">
+                                  {SEMI_PRECIOUS_GEMS.map(g => <option key={g} value={g}>{g}</option>)}
+                                </optgroup>
+                              </Field>
                                 <Field name={`gemstones.${index}.weight`} placeholder="Weight (ct)" type="number" className="form-input" />
                                 <Field name={`gemstones.${index}.stoneCount`} placeholder="Count" type="number" className="form-input" />
                                 <button type="button" onClick={() => remove(index)} className="btn-outline">Remove</button>
@@ -300,6 +354,17 @@ const GemstoneFormPage: React.FC = () => {
                       </FieldArray>
                     </div>
                   </CollapsibleSection>
+
+                  {values.itemType === 'Carved Idol' && (
+                    <CollapsibleSection title="Idol Details">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label htmlFor="idolAttribute" className="form-label">Idol Attribute</label>
+                          <Field name="idolAttribute" className="form-input" placeholder="e.g. Deity, Material" />
+                        </div>
+                      </div>
+                    </CollapsibleSection>
+                  )}
                 </>
               )}
 
@@ -348,7 +413,7 @@ const GemstoneFormPage: React.FC = () => {
                       <label htmlFor="metalType" className="form-label">Metal Type</label>
                       <Field as="select" name="metalType" className="form-select">
                         <option value="">Select metal type</option>
-                        {preciousMetalTypes.map(mt => <option key={mt} value={mt}>{mt}</option>)}
+                        {PRECIOUS_METALS.map(mt => <option key={mt} value={mt}>{mt}</option>)}
                       </Field>
                     </div>
                     <div>
@@ -404,7 +469,7 @@ const GemstoneFormPage: React.FC = () => {
                     <label htmlFor="stockStatus" className="form-label">Stock Status</label>
                     <Field as="select" name="stockStatus" className="form-select">
                       <option value="">Select stock status</option>
-                      {stockStatusOptions.map(ss => <option key={ss} value={ss}>{ss}</option>)}
+                      {STOCK_STATUSES.map(ss => <option key={ss} value={ss}>{ss}</option>)}
                     </Field>
                   </div>
                 </div>

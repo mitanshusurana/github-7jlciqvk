@@ -47,7 +47,11 @@ const ClientsPage: React.FC = () => {
             <tbody>
               {clients.map(client => (
                 <tr key={client.id} className="border-b">
-                  <td className="p-4">{client.name}</td>
+                  <td className="p-4">
+                    <Link to={`/clients/${client.id}`} className="text-primary-600 hover:underline font-medium">
+                      {client.name}
+                    </Link>
+                  </td>
                   <td className="p-4">{client.email}</td>
                   <td className="p-4">{client.phone}</td>
                   <td className="text-right p-4">

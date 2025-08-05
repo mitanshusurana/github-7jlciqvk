@@ -9,6 +9,7 @@ import ReportsPage from './pages/ReportsPage';
 import NewReportsPage from './pages/NewReportsPage';
 import ClientsPage from './pages/ClientsPage';
 import ClientFormPage from './pages/ClientFormPage';
+import ClientDetailPage from './pages/ClientDetailPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import QrCodePage from './pages/QrCodePage';
@@ -37,6 +38,7 @@ function App() {
         <Route path="reports/new" element={<NewReportsPage />} />
         <Route path="clients" element={<ClientsPage />} />
         <Route path="clients/new" element={<ClientFormPage />} />
+        <Route path="clients/:id" element={<ClientDetailPage />} />
         <Route path="clients/:id/edit" element={<ClientFormPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -165,6 +165,16 @@ export const useProducts = () => {
     }
   }, [fetchProducts]);
 
+  // Load more products
+  const loadMore = useCallback(() => {
+    if (pagination.page < pagination.totalPages) {
+      setPagination((prev) => ({
+        ...prev,
+        page: prev.page + 1,
+      }));
+    }
+  }, [pagination.page, pagination.totalPages]);
+
   // Get all categories
   const getCategories = useCallback(() => {
     const categories = new Set<string>();
@@ -181,73 +191,13 @@ export const useProducts = () => {
     return Array.from(tags);
   }, [products]);
 
-  const getOccasions = useCallback(() => {
-    const occasions = new Set<string>();
-    (products.content ?? []).forEach((prod: { occasion?: string; }) => prod.occasion && occasions.add(prod.occasion));
-    return Array.from(occasions);
-  }, [products]);
-
-  const getDesignTypes = useCallback(() => {
-    const designTypes = new Set<string>();
-    (products.content ?? []).forEach((prod: { designType?: string; }) => prod.designType && designTypes.add(prod.designType));
-    return Array.from(designTypes);
-  }, [products]);
-
-  const getStockStatuses = useCallback(() => {
-    const stockStatuses = new Set<string>();
-    (products.content ?? []).forEach((prod: { stockStatus?: string; }) => prod.stockStatus && stockStatuses.add(prod.stockStatus));
-    return Array.from(stockStatuses);
-  }, [products]);
-
-  const getPreciousGemTypes = useCallback(() => {
-    const preciousGems = new Set<string>();
-    (products.content ?? []).forEach((p) => {
-      if (p.productType === 'Jewelry') {
-        p.gemstones?.forEach(gem => {
-          if (gem.stone) preciousGems.add(gem.stone)
-        });
-      } else if ((p.productType === 'LooseStone' || p.productType === 'RoughStone') && p.category === 'Precious Gemstones') {
-        if (p.subCategory) preciousGems.add(p.subCategory)
-      }
-    });
-    return Array.from(preciousGems);
-  }, [products]);
-
-  const getSemiPreciousGemTypes = useCallback(() => {
-    const semiPreciousGems = new Set<string>();
-    (products.content ?? []).forEach((p) => {
-      if (p.productType === 'Jewelry') {
-        p.gemstones?.forEach(gem => {
-          if (gem.stone) semiPreciousGems.add(gem.stone)
-        });
-      } else if ((p.productType === 'LooseStone' || p.productType === 'RoughStone') && p.category === 'Semi-Precious Gemstones') {
-        if (p.subCategory) semiPreciousGems.add(p.subCategory)
-      }
-    });
-    return Array.from(semiPreciousGems);
-  }, [products]);
-
-  const getPreciousMetalTypes = useCallback(() => {
-    const metalTypes = new Set<string>();
-    (products.content ?? []).forEach((p) => {
-      if ((p.productType === 'Jewelry' || p.productType === 'Metal') && p.metalType) {
-        metalTypes.add(p.metalType);
-      }
-    });
-    return Array.from(metalTypes);
-  }, [products]);
-
   return {
     products,
     loading,
     error,
     pagination,
     hasMore: pagination.page < pagination.totalPages,
-    loadMore: useCallback(() => {
-      if (pagination.page < pagination.totalPages) {
-        setPagination(prev => ({ ...prev, page: prev.page + 1 }));
-      }
-    }, [pagination.page, pagination.totalPages]),
+    loadMore: () => setPagination(prev => ({ ...prev, page: prev.page + 1 })),
     filters,
     setFilters,
     addProduct,
@@ -256,12 +206,6 @@ export const useProducts = () => {
     getProduct,
     getCategories,
     getTags,
-    getOccasions,
-    getDesignTypes,
-    getStockStatuses,
-    getPreciousGemTypes,
-    getSemiPreciousGemTypes,
-    getPreciousMetalTypes,
     refresh: fetchProducts,
   };
 };

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Download, FileText, Filter, Printer, Search } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import useProducts from '../hooks/useProducts';
 import { FilterParams } from '../types';
 import { formatDate, formatWeight } from '../utils/formatters';
@@ -55,8 +57,29 @@ const ReportsPage: React.FC = () => {
   };
   
   const handleGeneratePDF = () => {
-    window.alert('PDF generation would be implemented here in a production app.');
-    // In a real app, we would use jspdf and jspdf-autotable to generate a PDF
+    const doc = new jsPDF();
+
+    const tableData = (products.content ?? []).map((p: any) => {
+      const row = [p.name, p.productType];
+      if (reportType === 'detailed') {
+        row.push(p.id, p.category, p.subCategory, formatWeight(p));
+      }
+      row.push(p.sellingPrice, p.stockStatus, formatDate(p.createdAt));
+      return row;
+    });
+
+    const headers = ['Name', 'Product Type'];
+    if (reportType === 'detailed') {
+      headers.push('SKU', 'Category', 'Sub-Category', 'Weight');
+    }
+    headers.push('Price', 'Stock Status', 'Created At');
+
+    (doc as any).autoTable({
+      head: [headers],
+      body: tableData,
+    });
+
+    doc.save('product_report.pdf');
   };
   
   const handleGenerateCSV = () => {
@@ -281,6 +304,14 @@ const ReportsPage: React.FC = () => {
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                       Product Type
                     </th>
+                    {reportType === 'detailed' && (
+                      <>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">SKU</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Category</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Sub-Category</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Weight</th>
+                      </>
+                    )}
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                       Price
                     </th>
@@ -301,6 +332,14 @@ const ReportsPage: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                         {product.productType}
                       </td>
+                      {reportType === 'detailed' && (
+                        <>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{product.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{product.category}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{product.subCategory}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{formatWeight(product)}</td>
+                        </>
+                      )}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                         {product.sellingPrice}
                       </td>

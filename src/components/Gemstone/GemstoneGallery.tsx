@@ -66,20 +66,19 @@ const GemstoneGallery: React.FC<GemstoneGalleryProps> = ({ images, video, name }
               poster={images.length > 0 ? images[0] : undefined}
               onPlay={() => setIsVideoPlaying(true)}
               onPause={() => setIsVideoPlaying(false)}
+              onClick={toggleVideoPlay}
             />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleVideoPlay();
-              }}
-              className="absolute inset-0 m-auto w-16 h-16 flex items-center justify-center bg-black/40 hover:bg-black/60 rounded-full text-white"
-            >
-              {isVideoPlaying ? (
-                <Pause className="h-8 w-8" />
-              ) : (
+            {!isVideoPlaying && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleVideoPlay();
+                }}
+                className="absolute inset-0 m-auto w-16 h-16 flex items-center justify-center bg-black/40 hover:bg-black/60 rounded-full text-white"
+              >
                 <Play className="h-8 w-8" />
-              )}
-            </button>
+              </button>
+            )}
           </div>
         ) : (
           <img

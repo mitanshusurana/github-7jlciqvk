@@ -178,6 +178,7 @@ export interface RoughStone extends Product {
 export interface Jewelry extends Product {
   productType: 'Jewelry';
   itemType: 'Ring' | 'Necklace' | 'Bracelet' | 'Earrings' | 'Pendant' | 'Brooch' | 'Carved Idol' | 'Antique Piece' | 'Custom Jewelry' | 'Watch' | 'Cufflinks' | 'Other';
+  idolAttribute?: string;
   designer?: string; // e.g., "Elsa Peretti"
   designType?: DesignType | string;
   occasion?: Occasion | string;
