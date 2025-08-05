@@ -54,16 +54,26 @@ export const Header: React.FC = () => {
               >
                 Inventory
               </Link>
-              <Link 
-                to="/reports" 
-                className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
-                  isActive('/reports') 
-                    ? 'border-primary-600 text-neutral-900' 
-                    : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
-                }`}
-              >
-                Reports
-              </Link>
+              <div className="relative group">
+                <Link
+                  to="/reports"
+                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
+                    isActive('/reports')
+                      ? 'border-primary-600 text-neutral-900'
+                      : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+                  }`}
+                >
+                  Reports
+                </Link>
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block">
+                  <Link to="/reports" className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
+                    Standard Reports
+                  </Link>
+                  <Link to="/reports/new" className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
+                    Advanced Reports
+                  </Link>
+                </div>
+              </div>
               <Link 
                 to="/analytics" 
                 className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
@@ -143,6 +153,17 @@ export const Header: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               Reports
+            </Link>
+            <Link
+              to="/reports/new"
+              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                isActive('/reports/new')
+                  ? 'bg-primary-50 border-primary-600 text-primary-700'
+                  : 'border-transparent text-neutral-500 hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-700'
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Advanced Reports
             </Link>
             <Link
               to="/analytics"

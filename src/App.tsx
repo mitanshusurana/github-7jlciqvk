@@ -6,6 +6,7 @@ import InventoryPage from './pages/InventoryPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import GemstoneFormPage from './pages/GemstoneFormPage';
 import ReportsPage from './pages/ReportsPage';
+import NewReportsPage from './pages/NewReportsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import QrCodePage from './pages/QrCodePage';
@@ -31,6 +32,7 @@ function App() {
         <Route path="product/:id/edit" element={<GemstoneFormPage />} />
         <Route path="product/:id/qr" element={<QrCodePage />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="reports/new" element={<NewReportsPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
