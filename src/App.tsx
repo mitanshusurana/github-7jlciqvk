@@ -18,6 +18,8 @@ import RequireAuth from './components/RequireAuth';
 import withRole from './components/withRole';
 import UserManagementPage from './pages/UserManagementPage';
 import ReportingDashboard from './pages/ReportingDashboard';
+import OrdersPage from './pages/OrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
 
 const AdminUserManagementPage = withRole(UserManagementPage, ['admin']);
 
@@ -46,6 +48,8 @@ function App() {
         <Route path="clients/new" element={<ClientFormPage />} />
         <Route path="clients/:id" element={<ClientDetailPage />} />
         <Route path="clients/:id/edit" element={<ClientFormPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route path="orders/:id" element={<OrderDetailPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="user-management" element={<AdminUserManagementPage />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -79,6 +79,9 @@ export interface BaseProduct {
   insuranceValue: number;
   appraisalDate?: string;
   taxCategory: string;
+
+  // Inventory
+  inventoryQuantity?: number;
 }
 
 // ===================================================================
@@ -253,4 +256,19 @@ export interface Movement {
   toLocation: string;
   date: string;
   userId: string;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  totalPrice: number;
+  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+  date: string;
+  items: {
+    productId: string;
+    productName: string;
+    quantity: number;
+    price: number;
+  }[];
 }

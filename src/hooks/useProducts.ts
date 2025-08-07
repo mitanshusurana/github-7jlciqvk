@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnyProduct, FilterParams, PaginationParams, PaginatedProducts } from '../types';
 import { productService } from '../services/productService';
+import { shopifyService } from '../services/shopifyService';
 import toast from 'react-hot-toast';
 import { useProductCacheStore } from '../store/ProductCacheStore';
 
@@ -175,6 +176,9 @@ export const useProducts = () => {
   const updateProduct = useCallback(async (id: string, updates: Partial<AnyProduct>) => {
     try {
       const updatedProduct = await productService.updateProduct(id, updates);
+      if (updatedProduct.platformIds?.shopifyId) {
+        await shopifyService.updateProduct(parseInt(updatedProduct.platformIds.shopifyId), updatedProduct);
+      }
       clearCache();
       clearSingleProductCache();
       fetchProducts();

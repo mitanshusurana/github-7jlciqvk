@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, QrCode, Share2 } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, QrCode, Share2, ShoppingCart } from 'lucide-react';
 import useProducts from '../hooks/useProducts';
 import { AnyProduct } from '../types';
 import GemstoneGallery from '../components/Gemstone/GemstoneGallery';
 import ShareModal from '../components/Gemstone/ShareModal';
 import toast from 'react-hot-toast';
+import { shopifyService } from '../services/shopifyService';
 
 import TitlePriceSection from '../components/Gemstone/DetailPageSections/TitlePriceSection';
 import ProductOverviewSection from '../components/Gemstone/DetailPageSections/ProductOverviewSection';
@@ -16,7 +17,7 @@ import AdditionalInfoTabs from '../components/Gemstone/DetailPageSections/Additi
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getProduct, deleteProduct } = useProducts();
+  const { getProduct, deleteProduct, updateProduct } = useProducts();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   
@@ -64,6 +65,25 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
+  const handleSyncToShopify = async () => {
+    if (product) {
+      try {
+        const shopifyProduct = await shopifyService.createProduct(product);
+        await updateProduct(product.id, {
+          ...product,
+          platformIds: {
+            ...product.platformIds,
+            shopifyId: shopifyProduct.id.toString(),
+          },
+        });
+        toast.success('Product synced to Shopify successfully!');
+      } catch (error) {
+        toast.error('Failed to sync product to Shopify.');
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className="container-page">
       <div className="flex justify-between items-center mb-6">
@@ -72,8 +92,41 @@ const ProductDetailPage: React.FC = () => {
           Back to Inventory
         </Link>
         <div className="flex space-x-2">
+          <button onClick={handleSyncToShopify} className="btn-outline"><ShoppingCart className="h-4 w-4 mr-2" />Sync to Shopify</button>
+          <button onClick={() => {
+            // Simulate a webhook call
+            fetch('/api/shopify-webhook', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: product.platformIds.shopifyId,
+                title: `${product.name} (Updated from Shopify)`,
+                body_html: product.description,
+                vendor: product.supplier,
+                product_type: product.productType,
+                variants: [{ price: product.price, sku: product.id }],
+              }),
+            });
+            toast.success('Simulated webhook call sent!');
+          }} className="btn-outline">Simulate Webhook</button>
           <button onClick={() => setShowShareModal(true)} className="btn-outline"><Share2 className="h-4 w-4" /></button>
           <Link to={`/product/${id}/edit`} className="btn-primary"><Edit className="h-4 w-4" /></Link>
+          <button onClick={() => {
+            // Simulate an order
+            if (product) {
+              const newQuantity = product.productType === 'LooseStone' ? product.quantity - 1 : (product.inventoryQuantity || 0) - 1;
+              if (newQuantity >= 0) {
+                const updatedProduct = {
+                  ...product,
+                  ...(product.productType === 'LooseStone' ? { quantity: newQuantity } : { inventoryQuantity: newQuantity }),
+                };
+                updateProduct(product.id, updatedProduct);
+                toast.success('Simulated order placed!');
+              } else {
+                toast.error('Not enough inventory to place order.');
+              }
+            }
+          }} className="btn-outline">Simulate Order</button>
           <button onClick={() => setShowDeleteConfirm(true)} className="btn-outline border-error-300 text-error-700 hover:bg-error-50"><Trash2 className="h-4 w-4" /></button>
         </div>
       </div>
