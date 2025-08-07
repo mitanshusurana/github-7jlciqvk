@@ -1,18 +1,40 @@
 import React, { useState } from 'react';
-import { AnyProduct } from '../../../types';
+import { AnyProduct, Movement } from '../../../types';
+import MovementHistory from '../../Movement/MovementHistory';
+import MovementForm from '../../Movement/MovementForm';
+import { useAuth } from '../../../hooks/useAuth';
 
 interface AdditionalInfoTabsProps {
   product: AnyProduct;
 }
 
+const mockMovements: Movement[] = [
+  { id: '1', productId: '1', fromLocation: 'Vault A', toLocation: 'Showcase 1', date: new Date().toISOString(), userId: '1' },
+  { id: '2', productId: '1', fromLocation: 'Showcase 1', toLocation: 'Vault B', date: new Date().toISOString(), userId: '2' },
+];
+
 const AdditionalInfoTabs: React.FC<AdditionalInfoTabsProps> = ({ product }) => {
   const [activeTab, setActiveTab] = useState('ecommerce');
+  const { user } = useAuth();
+  const [movements, setMovements] = useState<Movement[]>(mockMovements);
 
   const tabs = [
     { id: 'ecommerce', label: 'E-commerce' },
     { id: 'integration', label: 'System Integration' },
     { id: 'compliance', label: 'Audit & Compliance' },
+    { id: 'movement', label: 'Movement History' },
   ];
+
+  const handleMovementSubmit = (values: Omit<Movement, 'id' | 'userId'>) => {
+    if (user) {
+      const newMovement: Movement = {
+        ...values,
+        id: (movements.length + 1).toString(),
+        userId: user.id,
+      };
+      setMovements([...movements, newMovement]);
+    }
+  };
 
   return (
     <div className="card mt-8">
@@ -56,6 +78,15 @@ const AdditionalInfoTabs: React.FC<AdditionalInfoTabsProps> = ({ product }) => {
             <div><span className="font-semibold">Insurance Value:</span> {product.insuranceValue}</div>
             <div><span className="font-semibold">Appraisal Date:</span> {product.appraisalDate}</div>
             <div><span className="font-semibold">Tax Category:</span> {product.taxCategory}</div>
+          </div>
+        )}
+        {activeTab === 'movement' && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Record New Movement</h4>
+            <MovementForm productId={product.id} onSubmit={handleMovementSubmit} />
+            <hr className="my-6" />
+            <h4 className="text-lg font-semibold mb-4">Movement History</h4>
+            <MovementHistory movements={movements} />
           </div>
         )}
       </div>

@@ -225,15 +225,14 @@ export interface PaginationParams {
 export interface FilterParams {
   search?: string;
   category?: string;
-  subCategory?: string;
-  itemType?: string;
+  style?: string;
+  metal?: string;
+  clarityGrade?: ClarityGrade;
+  rarity?: Rarity;
+  workmanshipGrade?: WorkmanshipGrade;
   dateFrom?: string;
   dateTo?: string;
   tags?: string[];
-  occasion?: string;
-  designType?: string;
-  stockStatus?: string;
-  materialComposition?: string;
   sortBy?: 'name' | 'createdAt' | 'updatedAt' | 'weight' | 'value';
   sortOrder?: 'asc' | 'desc';
 }
@@ -245,4 +244,13 @@ export interface PaginatedProducts {
   size: number;
   number: number;
   total?: number;
+}
+
+export interface Movement {
+  id: string;
+  productId: string;
+  fromLocation: string;
+  toLocation: string;
+  date: string;
+  userId: string;
 }

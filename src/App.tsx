@@ -17,6 +17,7 @@ import LoginPage from './pages/LoginPage';
 import RequireAuth from './components/RequireAuth';
 import withRole from './components/withRole';
 import UserManagementPage from './pages/UserManagementPage';
+import ReportingDashboard from './pages/ReportingDashboard';
 
 const AdminUserManagementPage = withRole(UserManagementPage, ['admin']);
 
@@ -39,6 +40,7 @@ function App() {
         <Route path="product/:id/edit" element={<GemstoneFormPage />} />
         <Route path="product/:id/qr" element={<QrCodePage />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="reports/dashboard" element={<ReportingDashboard />} />
         <Route path="reports/new" element={<NewReportsPage />} />
         <Route path="clients" element={<ClientsPage />} />
         <Route path="clients/new" element={<ClientFormPage />} />

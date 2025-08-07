@@ -51,22 +51,56 @@ export const useProducts = () => {
       return;
     }
     try {
-      const params = { page: pagination.page, limit: pagination.limit, ...filters };
-      const response = await productService.getProducts(params);
+      const response = await productService.getProducts();
+      let allProducts = response.content || [];
 
-      const result = response || {
-        content: [],
-        totalPages: 0,
-        totalElements: 0,
-        size: 12,
-        number: 1,
+      // Apply filters
+      if (filters.search) {
+        allProducts = allProducts.filter(p => p.name.toLowerCase().includes(filters.search.toLowerCase()));
+      }
+      if (filters.category) {
+        allProducts = allProducts.filter(p => p.productType === 'Jewelry' && p.category === filters.category);
+      }
+      if (filters.style) {
+        allProducts = allProducts.filter(p => p.productType === 'Jewelry' && p.style === filters.style);
+      }
+      if (filters.metal) {
+        allProducts = allProducts.filter(p => p.productType === 'Jewelry' && p.metal === filters.metal);
+      }
+      if (filters.clarityGrade) {
+        allProducts = allProducts.filter(p => p.productType === 'LooseStone' && p.clarityGrade === filters.clarityGrade);
+      }
+      if (filters.rarity) {
+        allProducts = allProducts.filter(p => p.productType === 'CarvedIdol' && p.rarity === filters.rarity);
+      }
+      if (filters.workmanshipGrade) {
+        allProducts = allProducts.filter(p => p.productType === 'CarvedIdol' && p.workmanshipGrade === filters.workmanshipGrade);
+      }
+      if (filters.dateFrom) {
+        allProducts = allProducts.filter(p => new Date(p.acquisitionDate) >= new Date(filters.dateFrom));
+      }
+      if (filters.dateTo) {
+        allProducts = allProducts.filter(p => new Date(p.acquisitionDate) <= new Date(filters.dateTo));
+      }
+
+      const totalElements = allProducts.length;
+      const totalPages = Math.ceil(totalElements / pagination.limit);
+      const paginatedProducts = allProducts.slice((pagination.page - 1) * pagination.limit, pagination.page * pagination.limit);
+
+      const result = {
+        content: paginatedProducts,
+        totalPages,
+        totalElements,
+        size: pagination.limit,
+        number: pagination.page,
       };
+
       setProductCache(cacheKey, result);
       setProducts(result);
       setPagination(prev => ({
         ...prev,
-        totalItems: response.total,
-        totalPages: Math.ceil(response.total / prev.limit),
+        totalItems: totalElements,
+        totalPages,
       }));
     } catch (err) {
       setError('Failed to fetch products');
@@ -94,7 +128,7 @@ export const useProducts = () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // Only depend on cacheKey, not the whole productCache object
-  }, [getCacheKey()]);
+  }, [getCacheKey]);
 
   // Invalidate cache on add/update/delete
   const clearCache = () => {
@@ -124,7 +158,7 @@ export const useProducts = () => {
   };
 
   // Add a new product
-  const addProduct = useCallback(async (data: Omit<AnyProduct, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addProduct = useCallback(async (data: Omit<AnyProduct, 'id' | 'acquisitionDate'>) => {
     try {
       const newProduct = await productService.createProduct(data);
       clearCache();
@@ -175,37 +209,19 @@ export const useProducts = () => {
     }
   }, [pagination.page, pagination.totalPages]);
 
-  // Get all categories
-  const getCategories = useCallback(() => {
-    const categories = new Set<string>();
-    (products.content ?? []).forEach((prod: { category: string; }) => prod.category && categories.add(prod.category));
-    return Array.from(categories);
-  }, [products]);
-
-  // Get all tags
-  const getTags = useCallback(() => {
-    const tags = new Set<string>();
-    (products.content ?? []).forEach((prod: { tags: any; }) => {
-      (prod.tags || []).forEach((tag: string) => tag && tags.add(tag));
-    });
-    return Array.from(tags);
-  }, [products]);
-
   return {
     products,
     loading,
     error,
     pagination,
     hasMore: pagination.page < pagination.totalPages,
-    loadMore: () => setPagination(prev => ({ ...prev, page: prev.page + 1 })),
+    loadMore,
     filters,
     setFilters,
     addProduct,
     updateProduct,
     deleteProduct,
     getProduct,
-    getCategories,
-    getTags,
     refresh: fetchProducts,
   };
 };

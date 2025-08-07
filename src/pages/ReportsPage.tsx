@@ -129,6 +129,9 @@ const ReportsPage: React.FC = () => {
             Generate and export product inventory reports
           </p>
         </div>
+        <Link to="/reports/dashboard" className="btn-primary">
+          View Dashboard
+        </Link>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

@@ -19,6 +19,11 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   const [filters, setFilters] = useState<FilterParams>({
     search: '',
     category: '',
+    style: '',
+    metal: '',
+    clarityGrade: undefined,
+    rarity: undefined,
+    workmanshipGrade: undefined,
     dateFrom: '',
     dateTo: '',
     tags: [],
@@ -159,6 +164,50 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
               <select id="metal" name="metal" value={filters.metal} onChange={handleInputChange} className="form-select">
                 <option value="">All Metals</option>
                 {metals.map((metal) => <option key={metal} value={metal}>{metal}</option>)}
+              </select>
+            </div>
+
+            {/* Clarity Grade filter */}
+            <div>
+              <label htmlFor="clarityGrade" className="form-label">Clarity Grade</label>
+              <select id="clarityGrade" name="clarityGrade" value={filters.clarityGrade} onChange={handleInputChange} className="form-select">
+                <option value="">All</option>
+                <option value="FL">FL</option>
+                <option value="IF">IF</option>
+                <option value="VVS1">VVS1</option>
+                <option value="VVS2">VVS2</option>
+                <option value="VS1">VS1</option>
+                <option value="VS2">VS2</option>
+                <option value="SI1">SI1</option>
+                <option value="SI2">SI2</option>
+                <option value="I1">I1</option>
+                <option value="I2">I2</option>
+                <option value="I3">I3</option>
+              </select>
+            </div>
+
+            {/* Rarity filter */}
+            <div>
+              <label htmlFor="rarity" className="form-label">Rarity</label>
+              <select id="rarity" name="rarity" value={filters.rarity} onChange={handleInputChange} className="form-select">
+                <option value="">All</option>
+                <option value="Common">Common</option>
+                <option value="Uncommon">Uncommon</option>
+                <option value="Rare">Rare</option>
+                <option value="Very Rare">Very Rare</option>
+                <option value="Unique">Unique</option>
+              </select>
+            </div>
+
+            {/* Workmanship Grade filter */}
+            <div>
+              <label htmlFor="workmanshipGrade" className="form-label">Workmanship Grade</label>
+              <select id="workmanshipGrade" name="workmanshipGrade" value={filters.workmanshipGrade} onChange={handleInputChange} className="form-select">
+                <option value="">All</option>
+                <option value="Standard">Standard</option>
+                <option value="Fine">Fine</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Masterpiece">Masterpiece</option>
               </select>
             </div>
 
