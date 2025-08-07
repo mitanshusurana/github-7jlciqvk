@@ -1,11 +1,11 @@
 import React from 'react';
-import { Gemstone } from '../../../types';
+import { AnyProduct } from '../../../types';
 
 interface AuthenticitySectionProps {
-  gemstone: Gemstone;
+  product: AnyProduct;
 }
 
-const DetailItem: React.FC<{ label: string; value?: string | number | React.ReactNode }> = ({ label, value }) => {
+const DetailItem: React.FC<{ label: string; value?: string | number }> = ({ label, value }) => {
   if (!value) return null;
   return (
     <div>
@@ -15,26 +15,22 @@ const DetailItem: React.FC<{ label: string; value?: string | number | React.Reac
   );
 };
 
-const AuthenticitySection: React.FC<AuthenticitySectionProps> = ({ gemstone }) => {
+const AuthenticitySection: React.FC<AuthenticitySectionProps> = ({ product }) => {
   return (
     <div className="card p-6">
       <h3 className="text-xl font-semibold text-neutral-900 mb-4">Certifications & Authenticity</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <DetailItem label="Origin" value={gemstone.origin} />
-        <DetailItem label="Treatment" value={gemstone.treatment} />
-        <DetailItem label="Treatment Details" value={gemstone.treatmentDetails} />
-        <DetailItem label="Certification No." value={gemstone.certification} />
-        <DetailItem
-          label="Lab Certificate"
-          value={
-            gemstone.certificationUpload ? (
-              <a href={gemstone.certificationUpload} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">
-                View Certificate
-              </a>
-            ) : 'Not available'
-          }
-        />
-        <DetailItem label="Warranty" value={gemstone.warrantyInfo} />
+        {product.productType === 'LooseStone' && (
+          <>
+            <DetailItem label="Origin" value={product.origin} />
+            <DetailItem label="Certification ID" value={product.certificationId} />
+          </>
+        )}
+        {product.productType === 'CarvedIdol' && (
+          <DetailItem label="Origin" value={product.origin} />
+        )}
+        <DetailItem label="Appraisal Date" value={product.appraisalDate} />
+        <DetailItem label="Insurance Value" value={product.insuranceValue} />
       </div>
     </div>
   );

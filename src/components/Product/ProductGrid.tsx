@@ -1,10 +1,10 @@
 import React from 'react';
-import { Product } from '../../types';
+import { AnyProduct } from '../../types';
 import ProductCard from './ProductCard';
 import { useInView } from 'react-intersection-observer';
 
 interface ProductGridProps {
-  products: Product[];
+  products: AnyProduct[];
   loading?: boolean;
   onLoadMore?: () => void;
   hasMore?: boolean;

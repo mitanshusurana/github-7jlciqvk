@@ -5,7 +5,12 @@ import { Html5Qrcode } from 'html5-qrcode';
 import useProducts from '../hooks/useProducts';
 import ProductGrid from '../components/Product/ProductGrid';
 import ProductFilter from '../components/Product/ProductFilter';
-import { FilterParams, Occasion, DesignType, StockStatus } from '../types';
+import { FilterParams } from '../types';
+import {
+  JEWELRY_CATEGORIES,
+  JEWELRY_STYLES,
+  METALS,
+} from '../utils/constants';
 
 const InventoryPage: React.FC = () => {
   const { 
@@ -14,33 +19,14 @@ const InventoryPage: React.FC = () => {
     hasMore, 
     loadMore, 
     setFilters,
-    getCategories,
-    getTags,
-    getOccasions,
-    getDesignTypes,
-    getStockStatuses
   } = useProducts();
   
-  const [categories, setCategories] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [occasions, setOccasions] = useState<Occasion[]>([]);
-  const [designTypes, setDesignTypes] = useState<DesignType[]>([]);
-  const [stockStatuses, setStockStatuses] = useState<StockStatus[]>([]);
   const [showQrScanner, setShowQrScanner] = useState(false);
   const qrScannerRef = useRef<Html5Qrcode | null>(null);
   const runningRef = useRef(false);
   const qrRegionId = "inventory-qr-region";
   const navigate = useNavigate();
 
-  // Load categories and tags
-  useEffect(() => {
-    setCategories(getCategories());
-    setTags(getTags());
-    setOccasions(getOccasions());
-    setDesignTypes(getDesignTypes());
-    setStockStatuses(getStockStatuses());
-  }, [getCategories, getTags, getOccasions, getDesignTypes, getStockStatuses]);
-  
   const handleFilterChange = (filters: FilterParams) => {
     setFilters(filters);
   };
@@ -154,11 +140,9 @@ const InventoryPage: React.FC = () => {
       {/* Filters */}
       <ProductFilter
         onFilterChange={handleFilterChange}
-        categories={categories}
-        tags={tags}
-        occasions={occasions}
-        designTypes={designTypes}
-        stockStatuses={stockStatuses}
+        categories={JEWELRY_CATEGORIES}
+        styles={JEWELRY_STYLES}
+        metals={METALS}
       />
       
       {/* Grid view */}

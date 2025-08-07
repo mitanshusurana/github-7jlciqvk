@@ -33,10 +33,4 @@ export const productService = {
     return response.data;
   },
 
-  // Get all products for a specific client
-  async getProductsByClientId(clientId: string) {
-    const response = await api.get('');
-    const allProducts = response.data.content || [];
-    return allProducts.filter((p: AnyProduct) => p.clientId === clientId);
-  }
 };

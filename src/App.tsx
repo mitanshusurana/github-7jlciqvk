@@ -15,6 +15,10 @@ import NotFoundPage from './pages/NotFoundPage';
 import QrCodePage from './pages/QrCodePage';
 import LoginPage from './pages/LoginPage';
 import RequireAuth from './components/RequireAuth';
+import withRole from './components/withRole';
+import UserManagementPage from './pages/UserManagementPage';
+
+const AdminUserManagementPage = withRole(UserManagementPage, ['admin']);
 
 function App() {
   return (
@@ -41,6 +45,7 @@ function App() {
         <Route path="clients/:id" element={<ClientDetailPage />} />
         <Route path="clients/:id/edit" element={<ClientFormPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="user-management" element={<AdminUserManagementPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

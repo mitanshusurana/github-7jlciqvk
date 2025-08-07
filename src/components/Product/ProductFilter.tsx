@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, X, Search, ArrowDownAZ, ArrowUpZA, Calendar } from 'lucide-react';
-import { FilterParams, Occasion, DesignType, StockStatus } from '../../types';
+import { FilterParams, JewelryCategory, JewelryStyle, Metal } from '../../types';
 
 interface ProductFilterProps {
   onFilterChange: (filters: FilterParams) => void;
-  categories: string[];
-  tags: string[];
-  occasions: Occasion[];
-  designTypes: DesignType[];
-  stockStatuses: StockStatus[];
+  categories: JewelryCategory[];
+  styles: JewelryStyle[];
+  metals: Metal[];
 }
 
 const ProductFilter: React.FC<ProductFilterProps> = ({
   onFilterChange, 
   categories, 
-  tags,
-  occasions,
-  designTypes,
-  stockStatuses
+  styles,
+  metals,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<FilterParams>({
@@ -26,10 +22,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
     dateFrom: '',
     dateTo: '',
     tags: [],
-    occasion: '',
-    designType: '',
-    stockStatus: '',
-    materialComposition: '',
     sortBy: 'createdAt',
     sortOrder: 'desc'
   });
@@ -43,18 +35,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTagToggle = (tag: string) => {
-    setFilters((prev) => {
-      const currentTags = prev.tags || [];
-      return {
-        ...prev,
-        tags: currentTags.includes(tag)
-          ? currentTags.filter((t) => t !== tag)
-          : [...currentTags, tag]
-      };
-    });
-  };
-
   const handleClearFilters = () => {
     setFilters({
       search: '',
@@ -62,30 +42,8 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       dateFrom: '',
       dateTo: '',
       tags: [],
-      occasion: '',
-      designType: '',
-      stockStatus: '',
-      materialComposition: '',
       sortBy: 'createdAt',
       sortOrder: 'desc'
-    });
-  };
-
-  const handleSortChange = (sortBy: FilterParams['sortBy']) => {
-    setFilters((prev) => {
-      // If clicking the same column, toggle order
-      if (prev.sortBy === sortBy) {
-        return {
-          ...prev,
-          sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc'
-        };
-      }
-      // Otherwise, set the new sort column with default desc order
-      return {
-        ...prev,
-        sortBy,
-        sortOrder: 'desc'
-      };
     });
   };
 
@@ -186,37 +144,22 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
               </select>
             </div>
             
-            {/* Occasion filter */}
+            {/* Style filter */}
             <div>
-              <label htmlFor="occasion" className="form-label">Occasion</label>
-              <select id="occasion" name="occasion" value={filters.occasion} onChange={handleInputChange} className="form-select">
-                <option value="">All Occasions</option>
-                {occasions.map((occasion) => <option key={occasion} value={occasion}>{occasion}</option>)}
+              <label htmlFor="style" className="form-label">Style</label>
+              <select id="style" name="style" value={filters.style} onChange={handleInputChange} className="form-select">
+                <option value="">All Styles</option>
+                {styles.map((style) => <option key={style} value={style}>{style}</option>)}
               </select>
             </div>
 
-            {/* Design Type filter */}
+            {/* Metal filter */}
             <div>
-              <label htmlFor="designType" className="form-label">Design Type</label>
-              <select id="designType" name="designType" value={filters.designType} onChange={handleInputChange} className="form-select">
-                <option value="">All Design Types</option>
-                {designTypes.map((designType) => <option key={designType} value={designType}>{designType}</option>)}
+              <label htmlFor="metal" className="form-label">Metal</label>
+              <select id="metal" name="metal" value={filters.metal} onChange={handleInputChange} className="form-select">
+                <option value="">All Metals</option>
+                {metals.map((metal) => <option key={metal} value={metal}>{metal}</option>)}
               </select>
-            </div>
-
-            {/* Stock Status filter */}
-            <div>
-              <label htmlFor="stockStatus" className="form-label">Stock Status</label>
-              <select id="stockStatus" name="stockStatus" value={filters.stockStatus} onChange={handleInputChange} className="form-select">
-                <option value="">All Statuses</option>
-                {stockStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
-              </select>
-            </div>
-
-            {/* Material Composition filter */}
-            <div>
-              <label htmlFor="materialComposition" className="form-label">Material</label>
-              <input type="text" name="materialComposition" value={filters.materialComposition} onChange={handleInputChange} className="form-input" placeholder="e.g. Gold, Silver" />
             </div>
 
             {/* Date range filter */}
@@ -248,26 +191,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                 onChange={handleInputChange}
                 className="form-input"
               />
-            </div>
-          </div>
-          
-          {/* Tags filter */}
-          <div className="mt-4">
-            <label className="form-label">Tags</label>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => handleTagToggle(tag)}
-                  className={`text-sm px-3 py-1 rounded-full ${
-                    filters.tags?.includes(tag)
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
             </div>
           </div>
         </div>

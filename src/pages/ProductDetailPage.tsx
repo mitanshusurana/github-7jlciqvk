@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, QrCode, Share2, Clock, Info } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, QrCode, Share2 } from 'lucide-react';
 import useProducts from '../hooks/useProducts';
 import { AnyProduct } from '../types';
 import GemstoneGallery from '../components/Gemstone/GemstoneGallery';
 import ShareModal from '../components/Gemstone/ShareModal';
-import { formatDate, formatDateTime } from '../utils/formatters';
 import toast from 'react-hot-toast';
 
 import TitlePriceSection from '../components/Gemstone/DetailPageSections/TitlePriceSection';
@@ -74,7 +73,6 @@ const ProductDetailPage: React.FC = () => {
         </Link>
         <div className="flex space-x-2">
           <button onClick={() => setShowShareModal(true)} className="btn-outline"><Share2 className="h-4 w-4" /></button>
-          <Link to={`/product/${id}/qr`} className="btn-outline"><QrCode className="h-4 w-4" /></Link>
           <Link to={`/product/${id}/edit`} className="btn-primary"><Edit className="h-4 w-4" /></Link>
           <button onClick={() => setShowDeleteConfirm(true)} className="btn-outline border-error-300 text-error-700 hover:bg-error-50"><Trash2 className="h-4 w-4" /></button>
         </div>
@@ -82,21 +80,19 @@ const ProductDetailPage: React.FC = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <div className="lg:col-span-3">
-          <GemstoneGallery images={product.images || []} video={product.video} name={product.name} />
-          {product.detailedDescription && (
-            <div className="card p-6 mt-8">
-              <h3 className="text-xl font-semibold text-neutral-900 mb-4">Description</h3>
-              <p className="text-neutral-700 whitespace-pre-wrap">{product.detailedDescription}</p>
-            </div>
-          )}
-          <AdditionalInfoTabs gemstone={product} />
+          <GemstoneGallery images={product.images || []} video={product.videos?.[0]} name={product.name} />
+          <div className="card p-6 mt-8">
+            <h3 className="text-xl font-semibold text-neutral-900 mb-4">Description</h3>
+            <p className="text-neutral-700 whitespace-pre-wrap">{product.description}</p>
+          </div>
+          <AdditionalInfoTabs product={product} />
         </div>
         
         <div className="lg:col-span-2 space-y-8">
-          <TitlePriceSection gemstone={product} />
-          <ProductOverviewSection gemstone={product} />
-          <CraftsmanshipMetalSection gemstone={product} />
-          <AuthenticitySection gemstone={product} />
+          <TitlePriceSection product={product} />
+          <ProductOverviewSection product={product} />
+          <CraftsmanshipMetalSection product={product} />
+          <AuthenticitySection product={product} />
         </div>
       </div>
       

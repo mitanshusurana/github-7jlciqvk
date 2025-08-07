@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
-import { Gemstone } from '../../../types';
+import { AnyProduct } from '../../../types';
 
 interface AdditionalInfoTabsProps {
-  gemstone: Gemstone;
+  product: AnyProduct;
 }
 
-const AdditionalInfoTabs: React.FC<AdditionalInfoTabsProps> = ({ gemstone }) => {
-  const [activeTab, setActiveTab] = useState('care');
+const AdditionalInfoTabs: React.FC<AdditionalInfoTabsProps> = ({ product }) => {
+  const [activeTab, setActiveTab] = useState('ecommerce');
 
   const tabs = [
-    { id: 'care', label: 'Care Instructions', content: gemstone.careInstructions },
-    { id: 'returns', label: 'Returns', content: gemstone.returnPolicy },
-    { id: 'delivery', label: 'Delivery', content: gemstone.deliveryTimeEstimate },
-    { id: 'inTheBox', label: 'In the Box', content: gemstone.inTheBox?.join(', ') },
-    { id: 'zodiac', label: 'Zodiac Relevance', content: gemstone.zodiacRelevance },
-  ].filter(tab => tab.content); // Only show tabs with content
-
-  if (tabs.length === 0) {
-    return null;
-  }
+    { id: 'ecommerce', label: 'E-commerce' },
+    { id: 'integration', label: 'System Integration' },
+    { id: 'compliance', label: 'Audit & Compliance' },
+  ];
 
   return (
     <div className="card mt-8">
@@ -40,11 +34,30 @@ const AdditionalInfoTabs: React.FC<AdditionalInfoTabsProps> = ({ gemstone }) => 
         </nav>
       </div>
       <div className="p-6">
-        {tabs.map((tab) => (
-          <div key={tab.id} className={activeTab === tab.id ? '' : 'hidden'}>
-            <p className="text-neutral-700 whitespace-pre-wrap">{tab.content}</p>
+        {activeTab === 'ecommerce' && (
+          <div className="grid grid-cols-2 gap-4">
+            <div><span className="font-semibold">SEO Title:</span> {product.seoTitle}</div>
+            <div><span className="font-semibold">SEO Description:</span> {product.seoDescription}</div>
+            <div><span className="font-semibold">Tags:</span> {product.tags.join(', ')}</div>
+            <div><span className="font-semibold">Category Hierarchy:</span> {product.categoryHierarchy}</div>
           </div>
-        ))}
+        )}
+        {activeTab === 'integration' && (
+          <div className="grid grid-cols-2 gap-4">
+            <div><span className="font-semibold">Shopify ID:</span> {product.platformIds.shopifyId}</div>
+            <div><span className="font-semibold">Etsy ID:</span> {product.platformIds.etsyId}</div>
+            <div><span className="font-semibold">eBay ID:</span> {product.platformIds.ebayId}</div>
+            <div><span className="font-semibold">Amazon ID:</span> {product.platformIds.amazonId}</div>
+            <div><span className="font-semibold">Google Shopping ID:</span> {product.platformIds.googleShoppingId}</div>
+          </div>
+        )}
+        {activeTab === 'compliance' && (
+          <div className="grid grid-cols-2 gap-4">
+            <div><span className="font-semibold">Insurance Value:</span> {product.insuranceValue}</div>
+            <div><span className="font-semibold">Appraisal Date:</span> {product.appraisalDate}</div>
+            <div><span className="font-semibold">Tax Category:</span> {product.taxCategory}</div>
+          </div>
+        )}
       </div>
     </div>
   );
