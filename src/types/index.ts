@@ -82,6 +82,7 @@ export interface BaseProduct {
 
   // Inventory
   inventoryQuantity?: number;
+  reorderThreshold?: number;
 }
 
 // ===================================================================

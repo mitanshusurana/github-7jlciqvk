@@ -162,10 +162,18 @@ export const useProducts = () => {
   const addProduct = useCallback(async (data: Omit<AnyProduct, 'id' | 'acquisitionDate'>) => {
     try {
       const newProduct = await productService.createProduct(data);
+      const shopifyProduct = await shopifyService.createProduct(newProduct);
+      const updatedProduct = await productService.updateProduct(newProduct.id, {
+        ...newProduct,
+        platformIds: {
+          ...newProduct.platformIds,
+          shopifyId: shopifyProduct.id.toString(),
+        },
+      });
       clearCache();
       clearSingleProductCache();
       fetchProducts();
-      return newProduct;
+      return updatedProduct;
     } catch (err) {
       toast.error('Failed to add product');
       throw err;
@@ -179,6 +187,14 @@ export const useProducts = () => {
       if (updatedProduct.platformIds?.shopifyId) {
         await shopifyService.updateProduct(parseInt(updatedProduct.platformIds.shopifyId), updatedProduct);
       }
+
+      // Check for reorder threshold
+      const quantity = updatedProduct.productType === 'LooseStone' ? updatedProduct.quantity : updatedProduct.inventoryQuantity;
+      if (quantity !== undefined && updatedProduct.reorderThreshold !== undefined && quantity < updatedProduct.reorderThreshold) {
+        console.log(`Reorder request for product ${updatedProduct.name} (ID: ${updatedProduct.id})`);
+        toast.info(`Reorder request for product ${updatedProduct.name}`);
+      }
+
       clearCache();
       clearSingleProductCache();
       fetchProducts();

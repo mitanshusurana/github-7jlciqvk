@@ -20,6 +20,9 @@ import UserManagementPage from './pages/UserManagementPage';
 import ReportingDashboard from './pages/ReportingDashboard';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import WorkflowsPage from './pages/WorkflowsPage';
+import FinancialsPage from './pages/FinancialsPage';
 
 const AdminUserManagementPage = withRole(UserManagementPage, ['admin']);
 
@@ -51,6 +54,9 @@ function App() {
         <Route path="orders" element={<OrdersPage />} />
         <Route path="orders/:id" element={<OrderDetailPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="analytics/dashboard" element={<AnalyticsDashboard />} />
+        <Route path="workflows" element={<WorkflowsPage />} />
+        <Route path="financials" element={<FinancialsPage />} />
         <Route path="user-management" element={<AdminUserManagementPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
