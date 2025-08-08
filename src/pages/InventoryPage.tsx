@@ -7,9 +7,8 @@ import ProductGrid from '../components/Product/ProductGrid';
 import ProductFilter from '../components/Product/ProductFilter';
 import { FilterParams } from '../types';
 import {
-  JEWELRY_CATEGORIES,
-  JEWELRY_STYLES,
-  METALS,
+  DESIGN_TYPES,
+  PRECIOUS_METALS,
 } from '../utils/constants';
 
 const InventoryPage: React.FC = () => {
@@ -140,9 +139,9 @@ const InventoryPage: React.FC = () => {
       {/* Filters */}
       <ProductFilter
         onFilterChange={handleFilterChange}
-        categories={JEWELRY_CATEGORIES}
-        styles={JEWELRY_STYLES}
-        metals={METALS}
+        categories={DESIGN_TYPES}
+        styles={DESIGN_TYPES}
+        metals={PRECIOUS_METALS}
       />
       
       {/* Grid view */}

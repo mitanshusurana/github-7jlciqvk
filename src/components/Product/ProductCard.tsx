@@ -8,7 +8,7 @@ interface ProductCardProps {
   product: AnyProduct;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
   const { id, name, images, acquisitionDate } = product;
   
   const primaryImage = images.length > 0 
@@ -68,6 +68,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ProductCard;
