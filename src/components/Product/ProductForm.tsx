@@ -746,22 +746,40 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div className="form-group">
                     <label className="form-label">Metal Purity</label>
-                    <Field name="metalPurity" className="form-input" placeholder="e.g., 14K, 18K" />
+                    <Field as="select" name="metalPurity" className="form-select">
+                      <option value="">Select purity</option>
+                      {values.productType === 'Jewelry' && values.metal &&
+                       METAL_PURITIES[values.metal as keyof typeof METAL_PURITIES]?.map(purity => (
+                        <option key={purity} value={purity}>{purity}</option>
+                      )) || METAL_PURITIES.Other.map(purity => (
+                        <option key={purity} value={purity}>{purity}</option>
+                      ))}
+                    </Field>
                   </div>
                   <div className="form-group">
                     <label className="form-label">
                       <Weight className="h-4 w-4 inline mr-2" />
                       Metal Weight (grams)
                     </label>
-                    <Field type="number" step="0.1" name="metalWeight" className="form-input" />
+                    <Field type="number" step="0.1" name="metalWeight" className="form-input" placeholder="0.0" />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Metal Color</label>
-                    <Field name="metalColor" className="form-input" placeholder="e.g., Yellow, White, Rose" />
+                    <Field as="select" name="metalColor" className="form-select">
+                      <option value="">Select metal color</option>
+                      {METAL_COLORS.map(color => (
+                        <option key={color} value={color}>{color}</option>
+                      ))}
+                    </Field>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Plating</label>
-                    <Field name="plating" className="form-input" placeholder="e.g., Rhodium" />
+                    <Field as="select" name="plating" className="form-select">
+                      <option value="">Select plating</option>
+                      {PLATING_OPTIONS.map(plating => (
+                        <option key={plating} value={plating}>{plating}</option>
+                      ))}
+                    </Field>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Ring Size</label>
