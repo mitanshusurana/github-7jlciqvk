@@ -116,6 +116,16 @@ const DraggableMediaItem: React.FC<DraggableMediaItemProps> = ({
 const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   const [productType, setProductType] = useState<ProductType>(product?.productType || 'LooseStone');
   const [activeTab, setActiveTab] = useState('basic');
+  const [isIdValid, setIsIdValid] = useState(false);
+
+  // Generate a unique product ID
+  const generateProductId = useCallback(() => {
+    const timestamp = Date.now().toString();
+    const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+    const typePrefix = productType === 'LooseStone' ? 'GEM' :
+                      productType === 'CarvedIdol' ? 'ART' : 'JWL';
+    return `${typePrefix}-${timestamp.slice(-6)}-${random}`;
+  }, [productType]);
 
   // Create initial values based on product type
   const createInitialValues = useCallback((): AnyProduct => {
