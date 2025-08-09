@@ -1078,10 +1078,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                   >
                     Cancel
                   </button>
-                  <button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="btn-primary inline-flex items-center"
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !isIdValid || !values.id.trim()}
+                    className="btn-primary inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>
