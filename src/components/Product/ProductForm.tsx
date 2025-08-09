@@ -24,11 +24,11 @@ import {
 } from '../../types';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { 
-  GripVertical, 
-  X, 
-  Upload, 
-  Plus, 
+import {
+  GripVertical,
+  X,
+  Upload,
+  Plus,
   Minus,
   Info,
   Star,
@@ -42,8 +42,10 @@ import {
   Ruler,
   Weight,
   Shield,
-  Award
+  Award,
+  Hash
 } from 'lucide-react';
+import ProductIdInput from './ProductIdInput';
 
 interface ProductFormProps {
   product?: AnyProduct | null;
