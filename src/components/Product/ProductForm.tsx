@@ -233,6 +233,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   }, [product, productType, generateProductId]);
 
   const validationSchema = Yup.object().shape({
+    id: Yup.string().required('Product ID is required').matches(
+      /^[a-zA-Z0-9_-]+$/,
+      'ID can only contain letters, numbers, dashes, and underscores'
+    ),
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     cost: Yup.number().min(0, 'Cost must be positive'),
