@@ -176,7 +176,8 @@ export const useProducts = () => {
       fetchProducts();
       return updatedProduct;
     } catch (err) {
-      toast.error('Failed to add product');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add product';
+      toast.error(errorMessage);
       throw err;
     }
   }, [fetchProducts]);
