@@ -46,6 +46,7 @@ import {
   Hash
 } from 'lucide-react';
 import ProductIdInput from './ProductIdInput';
+import { generateProductId } from '../../utils/idGenerator';
 
 interface ProductFormProps {
   product?: AnyProduct | null;
