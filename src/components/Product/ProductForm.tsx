@@ -432,15 +432,30 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="form-group">
                   <label className="form-label">Material</label>
-                  <Field name="material" className="form-input" placeholder="e.g., Jade, Quartz" />
+                  <Field as="select" name="material" className="form-select">
+                    <option value="">Select material</option>
+                    {CARVING_MATERIALS.map(material => (
+                      <option key={material} value={material}>{material}</option>
+                    ))}
+                  </Field>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Cultural Significance</label>
-                  <Field name="culturalSignificance" className="form-input" placeholder="e.g., Buddhist, Hindu" />
+                  <label className="form-label">Cultural Origin</label>
+                  <Field as="select" name="culturalSignificance" className="form-select">
+                    <option value="">Select cultural origin</option>
+                    {CULTURAL_ORIGINS.map(culture => (
+                      <option key={culture} value={culture}>{culture}</option>
+                    ))}
+                  </Field>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Deity/Figure</label>
-                  <Field name="deityFigure" className="form-input" placeholder="e.g., Ganesha, Buddha" />
+                  <Field as="select" name="deityFigure" className="form-select">
+                    <option value="">Select deity/figure</option>
+                    {DEITY_FIGURES.map(deity => (
+                      <option key={deity} value={deity}>{deity}</option>
+                    ))}
+                  </Field>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Carving Style</label>
@@ -451,8 +466,26 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                   </Field>
                 </div>
                 <div className="form-group">
+                  <label className="form-label">Carving Technique</label>
+                  <Field as="select" name="carvingTechnique" className="form-select">
+                    <option value="">Select technique</option>
+                    {CARVING_TECHNIQUES.map(technique => (
+                      <option key={technique} value={technique}>{technique}</option>
+                    ))}
+                  </Field>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Age Period</label>
+                  <Field as="select" name="agePeriod" className="form-select">
+                    <option value="">Select age period</option>
+                    {AGE_PERIODS.map(period => (
+                      <option key={period} value={period}>{period}</option>
+                    ))}
+                  </Field>
+                </div>
+                <div className="form-group">
                   <label className="form-label">Artisan</label>
-                  <Field name="artisan" className="form-input" placeholder="Artist name" />
+                  <Field name="artisan" className="form-input" placeholder="Artist name (if known)" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Rarity</label>
@@ -463,6 +496,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                     <option value="Very Rare">Very Rare</option>
                     <option value="Unique">Unique</option>
                   </Field>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Origin Location</label>
+                  <Field name="origin" className="form-input" placeholder="Specific location/region" />
                 </div>
               </div>
             )}
