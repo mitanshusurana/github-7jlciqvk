@@ -378,10 +378,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                     <label className="form-label">Variety</label>
                     <Field as="select" name="variety" className="form-select">
                       <option value="">Select variety</option>
-                      {values.productType === 'LooseStone' && values.gemstoneType &&
-                       GEMSTONE_VARIETIES[values.gemstoneType as keyof typeof GEMSTONE_VARIETIES]?.map(variety => (
+                      {values.productType === 'LooseStone' &&
+                       values.gemstoneType &&
+                       GEMSTONE_VARIETIES[values.gemstoneType as keyof typeof GEMSTONE_VARIETIES] ?
+                       GEMSTONE_VARIETIES[values.gemstoneType as keyof typeof GEMSTONE_VARIETIES].map(variety => (
                         <option key={variety} value={variety}>{variety}</option>
-                      ))}
+                      )) : null}
                       <option value="Other">Other (specify in description)</option>
                     </Field>
                   </div>
