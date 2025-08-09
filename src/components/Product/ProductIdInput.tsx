@@ -27,6 +27,7 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
   const [isValidating, setIsValidating] = useState(false);
   const [validationStatus, setValidationStatus] = useState<'idle' | 'valid' | 'invalid' | 'duplicate'>('idle');
   const [validationMessage, setValidationMessage] = useState('');
+  const [cameraPermission, setCameraPermission] = useState<'unknown' | 'granted' | 'denied'>('unknown');
   
   const qrScannerRef = useRef<Html5Qrcode | null>(null);
   const runningRef = useRef(false);
