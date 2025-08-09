@@ -566,60 +566,117 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
         return (
           <div className="space-y-6">
             {productType === 'LooseStone' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="form-group">
-                  <label className="form-label">
-                    <Weight className="h-4 w-4 inline mr-2" />
-                    Carat Weight
-                  </label>
-                  <Field type="number" step="0.01" name="caratWeight" className="form-input" />
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="form-group">
+                    <label className="form-label">
+                      <Weight className="h-4 w-4 inline mr-2" />
+                      Carat Weight
+                    </label>
+                    <Field type="number" step="0.01" name="caratWeight" className="form-input" placeholder="0.00" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      <Ruler className="h-4 w-4 inline mr-2" />
+                      Dimensions (mm)
+                    </label>
+                    <Field name="dimensions" className="form-input" placeholder="L x W x H (e.g., 10.5 x 8.2 x 5.1)" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Quantity</label>
+                    <Field type="number" name="quantity" className="form-input" placeholder="1" />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">
-                    <Ruler className="h-4 w-4 inline mr-2" />
-                    Dimensions (mm)
-                  </label>
-                  <Field name="dimensions" className="form-input" placeholder="L x W x H" />
+
+                {/* Grading Section */}
+                <div className="border-t pt-6">
+                  <h4 className="text-lg font-medium text-neutral-900 mb-4">Grading & Quality</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="form-group">
+                      <label className="form-label">Clarity Grade</label>
+                      <Field as="select" name="clarityGrade" className="form-select">
+                        <option value="FL">FL (Flawless)</option>
+                        <option value="IF">IF (Internally Flawless)</option>
+                        <option value="VVS1">VVS1 (Very Very Slightly Included 1)</option>
+                        <option value="VVS2">VVS2 (Very Very Slightly Included 2)</option>
+                        <option value="VS1">VS1 (Very Slightly Included 1)</option>
+                        <option value="VS2">VS2 (Very Slightly Included 2)</option>
+                        <option value="SI1">SI1 (Slightly Included 1)</option>
+                        <option value="SI2">SI2 (Slightly Included 2)</option>
+                        <option value="I1">I1 (Included 1)</option>
+                        <option value="I2">I2 (Included 2)</option>
+                        <option value="I3">I3 (Included 3)</option>
+                      </Field>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Color Grade</label>
+                      <Field as="select" name="colorGrade" className="form-select">
+                        <option value="">Select color grade</option>
+                        {values.productType === 'LooseStone' && values.gemstoneType &&
+                         COLOR_GRADES[values.gemstoneType as keyof typeof COLOR_GRADES]?.map(grade => (
+                          <option key={grade} value={grade}>{grade}</option>
+                        )) || COLOR_GRADES.Other.map(grade => (
+                          <option key={grade} value={grade}>{grade}</option>
+                        ))}
+                      </Field>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Cut Grade</label>
+                      <Field as="select" name="cutGrade" className="form-select">
+                        <option value="">Select cut grade</option>
+                        {CUT_GRADES.map(grade => (
+                          <option key={grade} value={grade}>{grade}</option>
+                        ))}
+                      </Field>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Polish</label>
+                      <Field as="select" name="polish" className="form-select">
+                        <option value="">Select polish grade</option>
+                        {POLISH_GRADES.map(grade => (
+                          <option key={grade} value={grade}>{grade}</option>
+                        ))}
+                      </Field>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Symmetry</label>
+                      <Field as="select" name="symmetry" className="form-select">
+                        <option value="">Select symmetry grade</option>
+                        {SYMMETRY_GRADES.map(grade => (
+                          <option key={grade} value={grade}>{grade}</option>
+                        ))}
+                      </Field>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Fluorescence Level</label>
+                      <Field as="select" name="fluorescence" className="form-select">
+                        <option value="">Select fluorescence</option>
+                        {FLUORESCENCE_LEVELS.map(level => (
+                          <option key={level} value={level}>{level}</option>
+                        ))}
+                      </Field>
+                    </div>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Clarity Grade</label>
-                  <Field as="select" name="clarityGrade" className="form-select">
-                    <option value="FL">FL (Flawless)</option>
-                    <option value="IF">IF (Internally Flawless)</option>
-                    <option value="VVS1">VVS1</option>
-                    <option value="VVS2">VVS2</option>
-                    <option value="VS1">VS1</option>
-                    <option value="VS2">VS2</option>
-                    <option value="SI1">SI1</option>
-                    <option value="SI2">SI2</option>
-                    <option value="I1">I1</option>
-                    <option value="I2">I2</option>
-                    <option value="I3">I3</option>
-                  </Field>
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Color Grade</label>
-                  <Field name="colorGrade" className="form-input" placeholder="e.g., D, E, F" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Cut Grade</label>
-                  <Field name="cutGrade" className="form-input" placeholder="e.g., Excellent, Very Good" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Fluorescence</label>
-                  <Field name="fluorescence" className="form-input" placeholder="e.g., None, Faint" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Polish</label>
-                  <Field name="polish" className="form-input" placeholder="e.g., Excellent" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Symmetry</label>
-                  <Field name="symmetry" className="form-input" placeholder="e.g., Excellent" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Quantity</label>
-                  <Field type="number" name="quantity" className="form-input" />
+
+                {/* Treatment Information */}
+                <div className="border-t pt-6">
+                  <h4 className="text-lg font-medium text-neutral-900 mb-4">Treatment Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="form-group">
+                      <label className="form-label">Treatment Type</label>
+                      <Field as="select" name="treatmentType" className="form-select">
+                        <option value="">Select treatment</option>
+                        {TREATMENT_TYPES.map(treatment => (
+                          <option key={treatment} value={treatment}>{treatment}</option>
+                        ))}
+                      </Field>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Lot Number</label>
+                      <Field name="lotNumber" className="form-input" placeholder="Batch/lot identification" />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
