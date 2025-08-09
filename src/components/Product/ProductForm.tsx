@@ -871,15 +871,25 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                 <Field type="date" name="acquisitionDate" className="form-input" />
               </div>
               <div className="form-group">
-                <label className="form-label">Supplier</label>
-                <Field name="supplier" className="form-input" placeholder="Supplier name" />
+                <label className="form-label">Supplier Type</label>
+                <Field as="select" name="supplier" className="form-select">
+                  <option value="">Select supplier type</option>
+                  {SUPPLIERS.map(supplier => (
+                    <option key={supplier} value={supplier}>{supplier}</option>
+                  ))}
+                </Field>
               </div>
               <div className="form-group">
                 <label className="form-label">
                   <MapPin className="h-4 w-4 inline mr-2" />
                   Storage Location
                 </label>
-                <Field name="storageLocation" className="form-input" placeholder="e.g., Vault A, Shelf 3" />
+                <Field as="select" name="storageLocation" className="form-select">
+                  <option value="">Select storage location</option>
+                  {STORAGE_LOCATIONS.map(location => (
+                    <option key={location} value={location}>{location}</option>
+                  ))}
+                </Field>
               </div>
               <div className="form-group">
                 <label className="form-label">
