@@ -120,12 +120,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   const [isIdValid, setIsIdValid] = useState(false);
 
   // Generate a unique product ID
-  const generateProductId = useCallback(() => {
-    const timestamp = Date.now().toString();
-    const random = Math.random().toString(36).substr(2, 4).toUpperCase();
-    const typePrefix = productType === 'LooseStone' ? 'GEM' :
-                      productType === 'CarvedIdol' ? 'ART' : 'JWL';
-    return `${typePrefix}-${timestamp.slice(-6)}-${random}`;
+  const generateNewProductId = useCallback(() => {
+    return generateProductId(productType);
   }, [productType]);
 
   // Create initial values based on product type
