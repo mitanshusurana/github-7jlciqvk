@@ -229,6 +229,24 @@ export const useProducts = () => {
     }
   }, [pagination.page, pagination.totalPages]);
 
+  // Get unique categories from products
+  const getCategories = useCallback(() => {
+    const allProducts = products.content || [];
+    const categories = new Set<string>();
+
+    allProducts.forEach(product => {
+      if (product.productType === 'Jewelry' && product.category) {
+        categories.add(product.category);
+      } else if (product.productType === 'LooseStone' && product.gemstoneType) {
+        categories.add(product.gemstoneType);
+      } else if (product.productType === 'CarvedIdol' && product.material) {
+        categories.add(product.material);
+      }
+    });
+
+    return Array.from(categories).sort();
+  }, [products.content]);
+
   return {
     products,
     loading,
@@ -242,6 +260,7 @@ export const useProducts = () => {
     updateProduct,
     deleteProduct,
     getProduct,
+    getCategories,
     refresh: fetchProducts,
   };
 };
