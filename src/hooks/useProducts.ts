@@ -104,8 +104,9 @@ export const useProducts = () => {
         totalPages,
       }));
     } catch (err) {
-      setError('Failed to fetch products');
-      toast.error('Failed to fetch products');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch products';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
