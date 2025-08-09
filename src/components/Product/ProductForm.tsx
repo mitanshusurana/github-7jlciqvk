@@ -271,7 +271,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                 }}
                 placeholder="Enter unique product ID or scan QR code"
                 existingIds={[]} // TODO: This should come from your product service
-                generateId={generateProductId}
+                generateId={generateNewProductId}
               />
             </div>
 
