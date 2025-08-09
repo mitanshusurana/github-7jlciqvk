@@ -131,7 +131,16 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
             runningRef.current = true;
           } catch (err) {
             console.error('Error starting QR scanner:', err);
-            toast.error('Failed to start camera. Please check permissions.');
+            const error = err as Error;
+            if (error.name === 'NotAllowedError') {
+              toast.error('Camera permission denied. Please allow camera access and try again.');
+            } else if (error.name === 'NotFoundError') {
+              toast.error('No camera found on this device.');
+            } else if (error.name === 'NotSupportedError') {
+              toast.error('Camera not supported on this device.');
+            } else {
+              toast.error('Failed to start camera. Please check permissions and try again.');
+            }
             setShowQrScanner(false);
             qrScannerRef.current = null;
             runningRef.current = false;
