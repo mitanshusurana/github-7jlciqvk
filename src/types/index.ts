@@ -98,6 +98,8 @@ export interface LooseGemstone extends BaseProduct {
   origin: string;
   creationMethod: CreationMethod;
   certificationId: string;
+  certificationLab?: string;
+  treatmentType?: string;
 
   // Physical Characteristics
   caratWeight: number;
