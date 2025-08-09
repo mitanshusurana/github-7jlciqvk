@@ -616,10 +616,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                       <label className="form-label">Color Grade</label>
                       <Field as="select" name="colorGrade" className="form-select">
                         <option value="">Select color grade</option>
-                        {values.productType === 'LooseStone' && values.gemstoneType &&
-                         COLOR_GRADES[values.gemstoneType as keyof typeof COLOR_GRADES]?.map(grade => (
+                        {values.productType === 'LooseStone' &&
+                         values.gemstoneType &&
+                         COLOR_GRADES[values.gemstoneType as keyof typeof COLOR_GRADES] ?
+                         COLOR_GRADES[values.gemstoneType as keyof typeof COLOR_GRADES].map(grade => (
                           <option key={grade} value={grade}>{grade}</option>
-                        )) || COLOR_GRADES.Other.map(grade => (
+                        )) :
+                         COLOR_GRADES.Other.map(grade => (
                           <option key={grade} value={grade}>{grade}</option>
                         ))}
                       </Field>
