@@ -127,7 +127,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   // Create initial values based on product type
   const createInitialValues = useCallback((): AnyProduct => {
     const baseValues = {
-      id: product?.id || (product ? '' : generateProductId()),
+      id: product?.id || (product ? '' : generateNewProductId()),
       name: product?.name || '',
       description: product?.description || '',
       acquisitionDate: product?.acquisitionDate || new Date().toISOString().split('T')[0],
