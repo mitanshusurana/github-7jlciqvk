@@ -241,10 +241,20 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
           {/* QR Scanner Button */}
           <button
             type="button"
-            onClick={() => setShowQrScanner(!showQrScanner)}
+            onClick={() => {
+              if (cameraPermission === 'denied') {
+                checkCameraPermission();
+              } else {
+                setShowQrScanner(!showQrScanner);
+              }
+            }}
             disabled={disabled}
-            className="p-2 text-neutral-400 hover:text-neutral-600 disabled:opacity-50"
-            title="Scan QR Code"
+            className={`p-2 disabled:opacity-50 ${
+              cameraPermission === 'denied'
+                ? 'text-red-400 hover:text-red-600'
+                : 'text-neutral-400 hover:text-neutral-600'
+            }`}
+            title={cameraPermission === 'denied' ? 'Camera permission required' : 'Scan QR Code'}
           >
             <QrCode className="h-4 w-4" />
           </button>
