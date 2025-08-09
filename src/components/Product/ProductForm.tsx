@@ -755,10 +755,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                     <label className="form-label">Metal Purity</label>
                     <Field as="select" name="metalPurity" className="form-select">
                       <option value="">Select purity</option>
-                      {values.productType === 'Jewelry' && values.metal &&
-                       METAL_PURITIES[values.metal as keyof typeof METAL_PURITIES]?.map(purity => (
+                      {values.productType === 'Jewelry' &&
+                       values.metal &&
+                       METAL_PURITIES[values.metal as keyof typeof METAL_PURITIES] ?
+                       METAL_PURITIES[values.metal as keyof typeof METAL_PURITIES].map(purity => (
                         <option key={purity} value={purity}>{purity}</option>
-                      )) || METAL_PURITIES.Other.map(purity => (
+                      )) :
+                       METAL_PURITIES.Other.map(purity => (
                         <option key={purity} value={purity}>{purity}</option>
                       ))}
                     </Field>
