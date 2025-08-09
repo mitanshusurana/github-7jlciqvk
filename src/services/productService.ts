@@ -4,33 +4,76 @@ import { AnyProduct } from '../types';
 export const productService = {
   // Get all products with pagination and filters
   async getProducts(params?: Record<string, any>) {
-    // params can include page, size, sort, filters, etc.
-    const response = await api.get('/products', { params });
-    return response.data; // return the full paginated response
+    try {
+      const response = await api.get('/products', { params });
+      // For json-server, the data is directly the array, not in a content field
+      const products = Array.isArray(response.data) ? response.data : [];
+      return {
+        content: products,
+        totalPages: 1,
+        totalElements: products.length,
+        size: products.length,
+        number: 1,
+      };
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      throw new Error('Failed to fetch products. Please check if the API server is running.');
+    }
   },
 
   // Get a single product by ID
   async getProduct(id: string) {
-    const response = await api.get(`/products/${id}`);
-    return response.data;
+    try {
+      const response = await api.get(`/products/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      throw new Error(`Failed to fetch product with ID: ${id}`);
+    }
   },
 
   // Create a new product
   async createProduct(data: Omit<AnyProduct, 'id' | 'createdAt' | 'updatedAt'>) {
-    const response = await api.post('/products', data);
-    return response.data;
+    try {
+      // Generate a unique ID for the new product
+      const newProduct = {
+        ...data,
+        id: data.id || Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      const response = await api.post('/products', newProduct);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw new Error('Failed to create product. Please try again.');
+    }
   },
 
   // Update an existing product
   async updateProduct(id: string, data: Partial<AnyProduct>) {
-    const response = await api.put(`/products/${id}`, data);
-    return response.data;
+    try {
+      const updateData = {
+        ...data,
+        updatedAt: new Date().toISOString(),
+      };
+      const response = await api.put(`/products/${id}`, updateData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw new Error(`Failed to update product with ID: ${id}`);
+    }
   },
 
   // Delete a product
   async deleteProduct(id: string) {
-    const response = await api.delete(`/products/${id}`);
-    return response.data;
+    try {
+      const response = await api.delete(`/products/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw new Error(`Failed to delete product with ID: ${id}`);
+    }
   },
 
 };
