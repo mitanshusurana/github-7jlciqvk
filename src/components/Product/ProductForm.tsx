@@ -230,7 +230,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
       laborCost: (product as JewelryItem)?.laborCost ?? 0,
       warranty: (product as JewelryItem)?.warranty || 'None' as Warranty,
     } as JewelryItem;
-  }, [product, productType]);
+  }, [product, productType, generateProductId]);
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
