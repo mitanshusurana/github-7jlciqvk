@@ -159,7 +159,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
         origin: (product as LooseGemstone)?.origin || '',
         creationMethod: (product as LooseGemstone)?.creationMethod || 'Natural' as CreationMethod,
         certificationId: (product as LooseGemstone)?.certificationId || '',
-        caratWeight: (product as LooseGemstone)?.caratWeight || 0,
+        caratWeight: (product as LooseGemstone)?.caratWeight ?? 0,
         dimensions: (product as LooseGemstone)?.dimensions || '',
         shape: (product as LooseGemstone)?.shape || '',
         cutGrade: (product as LooseGemstone)?.cutGrade || '',
@@ -168,7 +168,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
         fluorescence: (product as LooseGemstone)?.fluorescence || '',
         polish: (product as LooseGemstone)?.polish || '',
         symmetry: (product as LooseGemstone)?.symmetry || '',
-        quantity: (product as LooseGemstone)?.quantity || 1,
+        quantity: (product as LooseGemstone)?.quantity ?? 1,
         lotNumber: (product as LooseGemstone)?.lotNumber || '',
       } as LooseGemstone;
     }
