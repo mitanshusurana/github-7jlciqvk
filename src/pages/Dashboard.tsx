@@ -110,13 +110,14 @@ const Dashboard: React.FC = () => {
           layouts={layouts}
           breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
           cols={{ lg: 12, md: 8, sm: 4, xs: 1, xxs: 1 }}
-          rowHeight={80}
-          margin={[16, 16]}
+          rowHeight={120}
+          margin={[24, 24]}
           containerPadding={[0, 0]}
           isDraggable={isDraggable}
           isResizable={isResizable}
-          compactType="vertical"
-          preventCollision={false}
+          compactType={null}
+          preventCollision={true}
+          autoSize={true}
         >
           <div key="total-products" className="widget-container">
             <TotalProductsWidget />
