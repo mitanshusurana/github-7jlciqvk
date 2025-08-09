@@ -358,39 +358,72 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
 
             {/* Product Type Specific Fields */}
             {productType === 'LooseStone' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="form-group">
-                  <label className="form-label">
-                    <Gem className="h-4 w-4 inline mr-2" />
-                    Gemstone Type
-                  </label>
-                  <Field name="gemstoneType" className="form-input" placeholder="e.g., Diamond, Ruby" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Variety</label>
-                  <Field name="variety" className="form-input" placeholder="e.g., Padparadscha" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">
-                    <MapPin className="h-4 w-4 inline mr-2" />
-                    Origin
-                  </label>
-                  <Field name="origin" className="form-input" placeholder="e.g., Ceylon, Burma" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Creation Method</label>
-                  <Field as="select" name="creationMethod" className="form-select">
-                    <option value="Natural">Natural</option>
-                    <option value="Lab-Grown">Lab-Grown</option>
-                  </Field>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="form-group">
+                    <label className="form-label">
+                      <Gem className="h-4 w-4 inline mr-2" />
+                      Gemstone Type
+                    </label>
+                    <Field as="select" name="gemstoneType" className="form-select">
+                      <option value="">Select gemstone type</option>
+                      {GEMSTONE_TYPES.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Variety</label>
+                    <Field as="select" name="variety" className="form-select">
+                      <option value="">Select variety</option>
+                      {values.productType === 'LooseStone' && values.gemstoneType &&
+                       GEMSTONE_VARIETIES[values.gemstoneType as keyof typeof GEMSTONE_VARIETIES]?.map(variety => (
+                        <option key={variety} value={variety}>{variety}</option>
+                      ))}
+                      <option value="Other">Other (specify in description)</option>
+                    </Field>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      <MapPin className="h-4 w-4 inline mr-2" />
+                      Origin
+                    </label>
+                    <Field as="select" name="origin" className="form-select">
+                      <option value="">Select origin</option>
+                      {GEMSTONE_ORIGINS.map(origin => (
+                        <option key={origin} value={origin}>{origin}</option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Creation Method</label>
+                    <Field as="select" name="creationMethod" className="form-select">
+                      <option value="Natural">Natural</option>
+                      <option value="Lab-Grown">Lab-Grown</option>
+                    </Field>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Shape</label>
+                    <Field as="select" name="shape" className="form-select">
+                      <option value="">Select shape</option>
+                      {GEMSTONE_SHAPES.map(shape => (
+                        <option key={shape} value={shape}>{shape}</option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Certification Lab</label>
+                    <Field as="select" name="certificationLab" className="form-select">
+                      <option value="">Select certification lab</option>
+                      {CERTIFICATION_LABS.map(lab => (
+                        <option key={lab} value={lab}>{lab}</option>
+                      ))}
+                    </Field>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Certification ID</label>
-                  <Field name="certificationId" className="form-input" placeholder="GIA/SSEF Certificate #" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Shape</label>
-                  <Field name="shape" className="form-input" placeholder="e.g., Round, Oval" />
+                  <Field name="certificationId" className="form-input" placeholder="Certificate number (e.g., GIA-1234567890)" />
                 </div>
               </div>
             )}
