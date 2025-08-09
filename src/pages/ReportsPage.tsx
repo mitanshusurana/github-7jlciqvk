@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Download, FileText, Filter, Printer, Search } from 'lucide-react';
-import useGemstones from '../hooks/useGemstones';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import useProducts from '../hooks/useProducts';
 import { FilterParams } from '../types';
 import { formatDate, formatWeight } from '../utils/formatters';
-import { gemstoneService } from '../services/gemstoneService';
+import { productService } from '../services/productService';
 
 const ReportsPage: React.FC = () => {
-  const { gemstones, setFilters } = useGemstones();
+  const { products, setFilters } = useProducts();
   const [search, setSearch] = useState('');
   const [reportType, setReportType] = useState<'all' | 'summary' | 'detailed'>('all');
   const [dateRange, setDateRange] = useState<'all' | 'last30' | 'last90' | 'thisYear'>('all');
@@ -17,7 +19,7 @@ const ReportsPage: React.FC = () => {
   const [size] = React.useState(12);
   const [filters] = React.useState({}); // e.g. { type: 'Ruby' }
 
-  const categories = Array.from(new Set((gemstones.content ?? []).map((gem: { category: any; }) => gem.category)));
+  const categories = Array.from(new Set((products.content ?? []).map((gem: { category: any; }) => gem.category)));
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -55,22 +57,40 @@ const ReportsPage: React.FC = () => {
   };
   
   const handleGeneratePDF = () => {
-    window.alert('PDF generation would be implemented here in a production app.');
-    // In a real app, we would use jspdf and jspdf-autotable to generate a PDF
+    const doc = new jsPDF();
+
+    const tableData = (products.content ?? []).map((p: any) => {
+      const row = [p.name, p.productType];
+      if (reportType === 'detailed') {
+        row.push(p.id, p.category, p.subCategory, formatWeight(p));
+      }
+      row.push(p.sellingPrice, p.stockStatus, formatDate(p.createdAt));
+      return row;
+    });
+
+    const headers = ['Name', 'Product Type'];
+    if (reportType === 'detailed') {
+      headers.push('SKU', 'Category', 'Sub-Category', 'Weight');
+    }
+    headers.push('Price', 'Stock Status', 'Created At');
+
+    (doc as any).autoTable({
+      head: [headers],
+      body: tableData,
+    });
+
+    doc.save('product_report.pdf');
   };
   
   const handleGenerateCSV = () => {
     // Simple CSV generation
-    const headers = ['Name', 'Category', 'Type', 'Weight', 'Color', 'Dimensions', 'Acquisition Date'];
-    const csvData = (gemstones.content ?? []).map((gem: { name: any; category: any; type: any; weight: any; color: any; dimensions: { length: any; width: any; height: any; }; acquisitionDate: any; }) => {
+    const headers = ['Name', 'Product Type', 'Price', 'Stock Status'];
+    const csvData = (products.content ?? []).map((product: any) => {
       return [
-        gem.name,
-        gem.category,
-        gem.type,
-        gem.weight,
-        gem.color,
-        `${gem.dimensions.length}x${gem.dimensions.width}x${gem.dimensions.height}`,
-        gem.acquisitionDate
+        product.name,
+        product.productType,
+        product.sellingPrice,
+        product.stockStatus,
       ].join(',');
     });
     
@@ -79,7 +99,7 @@ const ReportsPage: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'gemstone_report.csv';
+    a.download = 'product_report.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -92,7 +112,7 @@ const ReportsPage: React.FC = () => {
 
   React.useEffect(() => {
     setLoading(true);
-    gemstoneService.getGemstones({ page: page + 1, size, ...filters })
+    productService.getProducts({ page: page + 1, size, ...filters })
       .then(setData)
       .finally(() => setLoading(false));
   }, [page, size, filters]);
@@ -106,9 +126,12 @@ const ReportsPage: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-neutral-900">Reports</h1>
           <p className="mt-1 text-neutral-500">
-            Generate and export gemstone inventory reports
+            Generate and export product inventory reports
           </p>
         </div>
+        <Link to="/reports/dashboard" className="btn-primary">
+          View Dashboard
+        </Link>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -136,7 +159,7 @@ const ReportsPage: React.FC = () => {
                     value={search}
                     onChange={handleSearchChange}
                     className="form-input pl-10"
-                    placeholder="Search gemstones..."
+                    placeholder="Search products..."
                   />
                 </div>
               </div>
@@ -152,7 +175,7 @@ const ReportsPage: React.FC = () => {
                   onChange={(e) => setReportType(e.target.value as any)}
                   className="form-select"
                 >
-                  <option value="all">All Gemstones</option>
+                  <option value="all">All Products</option>
                   <option value="summary">Summary Report</option>
                   <option value="detailed">Detailed Report</option>
                 </select>
@@ -245,7 +268,7 @@ const ReportsPage: React.FC = () => {
         <div className="lg:col-span-3">
           <div className="card p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-neutral-900">Gemstone Inventory Report</h2>
+              <h2 className="text-xl font-semibold text-neutral-900">Product Inventory Report</h2>
               <div className="text-sm text-neutral-500">
                 {formatDate(new Date().toISOString())}
               </div>
@@ -282,50 +305,60 @@ const ReportsPage: React.FC = () => {
                       Name
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                      Category
+                      Product Type
+                    </th>
+                    {reportType === 'detailed' && (
+                      <>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">SKU</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Category</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Sub-Category</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Weight</th>
+                      </>
+                    )}
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Price
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                      Type
+                      Stock Status
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                      Weight
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                      Color
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                      Acquisition Date
+                      Created At
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-neutral-200">
-                  {(gemstones.content ?? []).map((gemstone: { id: React.Key | null | undefined; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; category: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; type: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; weight: number; color: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; acquisitionDate: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => (
-                    <tr key={gemstone.id} className="hover:bg-neutral-50">
+                  {(products.content ?? []).map((product: any) => (
+                    <tr key={product.id} className="hover:bg-neutral-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
-                        {gemstone.name}
+                        {product.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                        {gemstone.category}
+                        {product.productType}
+                      </td>
+                      {reportType === 'detailed' && (
+                        <>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{product.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{product.category}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{product.subCategory}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{formatWeight(product)}</td>
+                        </>
+                      )}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                        {product.sellingPrice}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                        {gemstone.type}
+                        {product.stockStatus}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                        {formatWeight(gemstone.weight)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                        {gemstone.color}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                        {gemstone.acquisitionDate}
+                        {formatDate(product.createdAt)}
                       </td>
                     </tr>
                   ))}
                   
-                  {(gemstones.content ?? []).length === 0 && (
+                  {(products.content ?? []).length === 0 && (
                     <tr>
                       <td colSpan={6} className="px-6 py-4 text-center text-sm text-neutral-500">
-                        No gemstones found matching the filter criteria
+                        No products found matching the filter criteria
                       </td>
                     </tr>
                   )}
@@ -339,14 +372,14 @@ const ReportsPage: React.FC = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-neutral-50 rounded-lg p-4">
-                  <div className="text-sm text-neutral-500">Total Gemstones</div>
-                  <div className="text-2xl font-semibold text-neutral-900">{(gemstones.content ?? []).length}</div>
+                  <div className="text-sm text-neutral-500">Total Products</div>
+                  <div className="text-2xl font-semibold text-neutral-900">{(products.content ?? []).length}</div>
                 </div>
                 
                 <div className="bg-neutral-50 rounded-lg p-4">
-                  <div className="text-sm text-neutral-500">Total Weight</div>
+                  <div className="text-sm text-neutral-500">Total Value</div>
                   <div className="text-2xl font-semibold text-neutral-900">
-                    {formatWeight((gemstones.content ?? []).reduce((sum: any, gem: { weight: any; }) => sum + gem.weight, 0))}
+                    {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format((products.content ?? []).reduce((sum: any, prod: { sellingPrice: any; }) => sum + prod.sellingPrice, 0))}
                   </div>
                 </div>
                 
@@ -356,11 +389,9 @@ const ReportsPage: React.FC = () => {
                 </div>
                 
                 <div className="bg-neutral-50 rounded-lg p-4">
-                  <div className="text-sm text-neutral-500">Average Weight</div>
+                  <div className="text-sm text-neutral-500">Items in Stock</div>
                   <div className="text-2xl font-semibold text-neutral-900">
-                    {(gemstones.content ?? []).length > 0
-                      ? formatWeight((gemstones.content ?? []).reduce((sum: any, gem: { weight: any; }) => sum + gem.weight, 0) / (gemstones.content ?? []).length)
-                      : '0 ct'}
+                    {(products.content ?? []).filter(p => p.stockStatus === 'In Stock').length}
                   </div>
                 </div>
               </div>

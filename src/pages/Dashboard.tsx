@@ -1,191 +1,146 @@
+import React, { useState } from 'react';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
+import TotalProductsWidget from '../components/Dashboard/widgets/TotalProductsWidget';
+import CategoriesWidget from '../components/Dashboard/widgets/CategoriesWidget';
+import ReportsWidget from '../components/Dashboard/widgets/ReportsWidget';
+import AnalyticsWidget from '../components/Dashboard/widgets/AnalyticsWidget';
+import RecentProductsWidget from '../components/Dashboard/widgets/RecentProductsWidget';
+import SalesOverTimeWidget from '../components/Dashboard/widgets/SalesOverTimeWidget';
+import TopPerformingCategoriesWidget from '../components/Dashboard/widgets/TopPerformingCategoriesWidget';
+import { Settings, Plus, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Diamond, Package, ClipboardList, BarChart3, Search, Plus } from 'lucide-react';
-import useGemstones from '../hooks/useGemstones';
-import GemstoneCard from '../components/Gemstone/GemstoneCard';
-import { Gemstone } from '../types';
 
-const Dashboard = () => {
-  const { gemstones = { content: [] }, loading } = useGemstones();
-  
-  // Show only the 4 most recent gemstones (or fewer if less exist)
-  const recentGemstones = (gemstones.content ?? []).slice(0, 4);
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const Dashboard: React.FC = () => {
+  const [isDraggable, setIsDraggable] = useState(false);
+  const [isResizable, setIsResizable] = useState(false);
+
+  const layouts = {
+    lg: [
+      { i: 'total-products', x: 0, y: 0, w: 3, h: 2, minW: 2, minH: 2, static: false },
+      { i: 'categories', x: 3, y: 0, w: 3, h: 2, minW: 2, minH: 2, static: false },
+      { i: 'reports', x: 6, y: 0, w: 3, h: 2, minW: 2, minH: 2, static: false },
+      { i: 'analytics', x: 9, y: 0, w: 3, h: 2, minW: 2, minH: 2, static: false },
+      { i: 'sales-over-time', x: 0, y: 2, w: 6, h: 3, minW: 4, minH: 3, static: false },
+      { i: 'top-performing-categories', x: 6, y: 2, w: 6, h: 3, minW: 4, minH: 3, static: false },
+      { i: 'recent-products', x: 0, y: 5, w: 12, h: 3, minW: 6, minH: 3, static: false },
+    ],
+    md: [
+      { i: 'total-products', x: 0, y: 0, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'categories', x: 2, y: 0, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'reports', x: 4, y: 0, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'analytics', x: 6, y: 0, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'sales-over-time', x: 0, y: 2, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'top-performing-categories', x: 4, y: 2, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'recent-products', x: 0, y: 5, w: 8, h: 3, minW: 4, minH: 3 },
+    ],
+    sm: [
+      { i: 'total-products', x: 0, y: 0, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'categories', x: 2, y: 0, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'reports', x: 0, y: 2, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'analytics', x: 2, y: 2, w: 2, h: 2, minW: 2, minH: 2 },
+      { i: 'sales-over-time', x: 0, y: 4, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'top-performing-categories', x: 0, y: 7, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'recent-products', x: 0, y: 10, w: 4, h: 3, minW: 3, minH: 3 },
+    ],
+    xs: [
+      { i: 'total-products', x: 0, y: 0, w: 1, h: 2, minW: 1, minH: 2 },
+      { i: 'categories', x: 0, y: 2, w: 1, h: 2, minW: 1, minH: 2 },
+      { i: 'reports', x: 0, y: 4, w: 1, h: 2, minW: 1, minH: 2 },
+      { i: 'analytics', x: 0, y: 6, w: 1, h: 2, minW: 1, minH: 2 },
+      { i: 'sales-over-time', x: 0, y: 8, w: 1, h: 3, minW: 1, minH: 3 },
+      { i: 'top-performing-categories', x: 0, y: 11, w: 1, h: 3, minW: 1, minH: 3 },
+      { i: 'recent-products', x: 0, y: 14, w: 1, h: 3, minW: 1, minH: 3 },
+    ],
+  };
+
+  const toggleEditMode = () => {
+    setIsDraggable(!isDraggable);
+    setIsResizable(!isResizable);
+  };
 
   return (
-    <div className="container-page">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-neutral-900">Welcome to GemTracker</h1>
-          <p className="mt-1 text-neutral-500">
-            Manage your gemstone inventory efficiently
-          </p>
-        </div>
-        <div className="mt-4 md:mt-0">
-          <Link
-            to="/gemstone/new"
-            className="btn-primary flex items-center space-x-1"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add New Gemstone</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Quick stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="card p-6 flex items-center">
-          <div className="rounded-full bg-primary-100 p-3 mr-4">
-            <Diamond className="h-6 w-6 text-primary-600" />
-          </div>
+    <div className="min-h-screen bg-neutral-50">
+      {/* Header */}
+      <div className="bg-white border-b border-neutral-200 px-6 py-4">
+        <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-neutral-500">Total Gemstones</p>
-            <p className="text-2xl font-semibold text-neutral-900">{loading ? '...' : (gemstones.content ?? []).length}</p>
+            <h1 className="text-3xl font-bold text-neutral-900">Dashboard</h1>
+            <p className="text-neutral-600 mt-1">Monitor your jewelry and gemstone inventory</p>
           </div>
-        </div>
-        
-        <div className="card p-6 flex items-center">
-          <div className="rounded-full bg-secondary-100 p-3 mr-4">
-            <Package className="h-6 w-6 text-secondary-500" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-neutral-500">Categories</p>
-            <p className="text-2xl font-semibold text-neutral-900">5</p>
-          </div>
-        </div>
-        
-        <div className="card p-6 flex items-center">
-          <div className="rounded-full bg-accent-100 p-3 mr-4">
-            <ClipboardList className="h-6 w-6 text-accent-500" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-neutral-500">Reports</p>
-            <p className="text-2xl font-semibold text-neutral-900">3</p>
-          </div>
-        </div>
-        
-        <div className="card p-6 flex items-center">
-          <div className="rounded-full bg-success-100 p-3 mr-4">
-            <BarChart3 className="h-6 w-6 text-success-600" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-neutral-500">Analytics</p>
-            <p className="text-2xl font-semibold text-neutral-900">12</p>
+          <div className="flex items-center space-x-4">
+            <Link 
+              to="/product/new" 
+              className="btn-primary inline-flex items-center"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Product
+            </Link>
+            <button 
+              onClick={toggleEditMode}
+              className={`inline-flex items-center px-4 py-2 border rounded-lg transition-colors ${
+                isDraggable 
+                ? 'bg-primary-100 border-primary-300 text-primary-700' 
+                : 'bg-white border-neutral-300 text-neutral-700 hover:bg-neutral-50'
+              }`}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              {isDraggable ? 'Exit Edit' : 'Customize'}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Quick actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Link to="/inventory" className="card p-6 hover:bg-primary-50 transition-colors">
-          <div className="flex items-center">
-            <div className="rounded-full bg-primary-100 p-3 mr-4">
-              <Search className="h-6 w-6 text-primary-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-neutral-900">Browse Inventory</h3>
-              <p className="text-sm text-neutral-500">Search and filter your gemstone collection</p>
-            </div>
-          </div>
-        </Link>
-        
-        <Link to="/gemstone/new" className="card p-6 hover:bg-secondary-50 transition-colors">
-          <div className="flex items-center">
-            <div className="rounded-full bg-secondary-100 p-3 mr-4">
-              <Plus className="h-6 w-6 text-secondary-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-neutral-900">Add Gemstone</h3>
-              <p className="text-sm text-neutral-500">Create a new gemstone record</p>
-            </div>
-          </div>
-        </Link>
-        
-        <Link to="/reports" className="card p-6 hover:bg-accent-50 transition-colors">
-          <div className="flex items-center">
-            <div className="rounded-full bg-accent-100 p-3 mr-4">
-              <ClipboardList className="h-6 w-6 text-accent-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-neutral-900">Generate Report</h3>
-              <p className="text-sm text-neutral-500">Create inventory reports and exports</p>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* Recent gemstones */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-neutral-900">Recent Gemstones</h2>
-          <Link to="/inventory" className="text-sm font-medium text-primary-600 hover:text-primary-800">
-            View all
-          </Link>
-        </div>
-        <div className="gem-grid">
-          {loading ? (
-            // Loading skeletons
-            Array.from({ length: 4 }).map((_, index) => (
-              <div key={`skeleton-${index}`} className="card">
-                <div className="aspect-square bg-neutral-200 animate-pulse"></div>
-                <div className="p-4">
-                  <div className="h-5 bg-neutral-200 animate-pulse rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-neutral-200 animate-pulse rounded w-1/2"></div>
-                  <div className="mt-3 flex justify-between">
-                    <div className="h-3 bg-neutral-200 animate-pulse rounded w-1/3"></div>
-                    <div className="h-3 bg-neutral-200 animate-pulse rounded w-1/4"></div>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : recentGemstones.length > 0 ? (
-            recentGemstones.map((gemstone: Gemstone) => (
-              <GemstoneCard key={gemstone.id} gemstone={gemstone} />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-8">
-              <p className="text-neutral-500">No gemstones found</p>
-              <Link to="/gemstone/new" className="btn-primary mt-4 inline-flex">
-                Add your first gemstone
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Getting started guide */}
-      <div className="card p-6">
-        <h2 className="text-xl font-semibold text-neutral-900 mb-4">Getting Started</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex flex-col">
-            <div className="rounded-full bg-primary-100 w-10 h-10 flex items-center justify-center mb-3">
-              <span className="font-semibold text-primary-600">1</span>
-            </div>
-            <h3 className="text-lg font-medium text-neutral-800 mb-1">Add Gemstones</h3>
-            <p className="text-neutral-500 text-sm">
-              Start by adding your gemstones to the inventory with details and images.
+      {/* Dashboard Content */}
+      <div className="p-6">
+        {isDraggable && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-blue-800 text-sm font-medium">
+              📝 Edit Mode: Drag and resize widgets to customize your dashboard layout
             </p>
           </div>
-          
-          <div className="flex flex-col">
-            <div className="rounded-full bg-primary-100 w-10 h-10 flex items-center justify-center mb-3">
-              <span className="font-semibold text-primary-600">2</span>
-            </div>
-            <h3 className="text-lg font-medium text-neutral-800 mb-1">Organize and Tag</h3>
-            <p className="text-neutral-500 text-sm">
-              Categorize your gemstones and add tags to make them easy to find.
-            </p>
+        )}
+
+        <ResponsiveGridLayout
+          className="layout"
+          layouts={layouts}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 12, md: 8, sm: 4, xs: 1, xxs: 1 }}
+          rowHeight={120}
+          margin={[24, 24]}
+          containerPadding={[0, 0]}
+          isDraggable={isDraggable}
+          isResizable={isResizable}
+          compactType={null}
+          preventCollision={true}
+          autoSize={true}
+        >
+          <div key="total-products" className="widget-container">
+            <TotalProductsWidget />
           </div>
-          
-          <div className="flex flex-col">
-            <div className="rounded-full bg-primary-100 w-10 h-10 flex items-center justify-center mb-3">
-              <span className="font-semibold text-primary-600">3</span>
-            </div>
-            <h3 className="text-lg font-medium text-neutral-800 mb-1">Generate QR Codes</h3>
-            <p className="text-neutral-500 text-sm">
-              Create QR codes for each gemstone for easy identification and tracking.
-            </p>
+          <div key="categories" className="widget-container">
+            <CategoriesWidget />
           </div>
-        </div>
+          <div key="reports" className="widget-container">
+            <ReportsWidget />
+          </div>
+          <div key="analytics" className="widget-container">
+            <AnalyticsWidget />
+          </div>
+          <div key="sales-over-time" className="widget-container">
+            <SalesOverTimeWidget />
+          </div>
+          <div key="top-performing-categories" className="widget-container">
+            <TopPerformingCategoriesWidget />
+          </div>
+          <div key="recent-products" className="widget-container">
+            <RecentProductsWidget />
+          </div>
+        </ResponsiveGridLayout>
       </div>
     </div>
   );
