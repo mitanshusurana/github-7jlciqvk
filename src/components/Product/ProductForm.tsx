@@ -1068,7 +1068,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
               {/* Form Actions */}
               <div className="flex justify-between items-center pt-6 border-t border-neutral-200">
                 <div className="text-sm text-neutral-500">
-                  * Required fields must be completed before saving
+                  * Required fields must be completed and ID must be valid before saving
+                  {!isIdValid && values.id.trim() && (
+                    <div className="text-red-500 mt-1">⚠ Product ID validation required</div>
+                  )}
                 </div>
                 <div className="flex space-x-4">
                   <button 
