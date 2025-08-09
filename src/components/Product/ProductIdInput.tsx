@@ -42,12 +42,11 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
     }
 
     setIsValidating(true);
-    
-    // Basic format validation (alphanumeric, dashes, underscores)
-    const idPattern = /^[a-zA-Z0-9_-]+$/;
-    if (!idPattern.test(id)) {
+
+    // Basic format validation
+    if (!validateProductIdFormat(id)) {
       setValidationStatus('invalid');
-      setValidationMessage('ID can only contain letters, numbers, dashes, and underscores');
+      setValidationMessage('ID must be 3-50 characters: letters, numbers, dashes, and underscores only');
       onValidation?.(false, 'Invalid format');
       setIsValidating(false);
       return;
