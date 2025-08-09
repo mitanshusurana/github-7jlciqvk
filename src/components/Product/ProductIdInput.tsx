@@ -169,6 +169,22 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
     }
   };
 
+  const checkCameraPermission = async () => {
+    try {
+      const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
+      setCameraPermission(result.state === 'granted' ? 'granted' : 'denied');
+
+      if (result.state === 'denied') {
+        toast.error('Camera permission denied. Please enable camera access in browser settings.');
+      } else if (result.state === 'granted') {
+        toast.success('Camera permission granted!');
+      }
+    } catch (err) {
+      // Fallback for browsers that don't support permissions API
+      setCameraPermission('unknown');
+    }
+  };
+
   const getStatusIcon = () => {
     if (isValidating) {
       return <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>;
