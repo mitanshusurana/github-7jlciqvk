@@ -1174,7 +1174,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
               </div>
               <div className="form-group">
                 <label className="form-label">Tax Category</label>
-                <Field name="taxCategory" className="form-input" placeholder="e.g., Luxury goods" />
+                <Field as="select" name="taxCategory" className="form-select">
+                  <option value="">Select tax category</option>
+                  {TAX_CATEGORIES.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </Field>
               </div>
             </div>
           </div>
