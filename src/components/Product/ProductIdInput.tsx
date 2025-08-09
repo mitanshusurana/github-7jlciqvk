@@ -116,20 +116,10 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
               async (decodedText) => {
                 if (cancelled) return;
                 console.log('QR decoded value:', decodedText);
-                
-                // Extract ID from URL if it's a full URL
-                let extractedId = decodedText;
-                try {
-                  const url = new URL(decodedText);
-                  const pathParts = url.pathname.split('/');
-                  const productIndex = pathParts.indexOf('product');
-                  if (productIndex !== -1 && pathParts[productIndex + 1]) {
-                    extractedId = pathParts[productIndex + 1];
-                  }
-                } catch {
-                  // Not a URL, use as-is
-                }
-                
+
+                // Extract ID from URL or use as-is
+                const extractedId = extractIdFromQrCode(decodedText);
+
                 onChange(extractedId);
                 setShowQrScanner(false);
                 toast.success('QR code scanned successfully!');
