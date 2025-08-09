@@ -274,13 +274,18 @@ const ProductIdInput: React.FC<ProductIdInputProps> = ({
               <X className="h-4 w-4" />
             </button>
           </div>
-          
+
           <div className="flex justify-center">
             <div id={qrRegionId} style={{ width: 300 }} />
           </div>
-          
-          <div className="mt-4 text-xs text-neutral-500 text-center">
-            Position the QR code within the frame to scan automatically
+
+          <div className="mt-4 space-y-2">
+            <div className="text-xs text-neutral-500 text-center">
+              Position the QR code within the frame to scan automatically
+            </div>
+            <div className="text-xs text-blue-600 text-center">
+              💡 If camera doesn't start, please allow camera permissions in your browser
+            </div>
           </div>
         </div>
       )}
