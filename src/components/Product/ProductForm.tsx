@@ -47,6 +47,32 @@ import {
 } from 'lucide-react';
 import ProductIdInput from './ProductIdInput';
 import { generateProductId } from '../../utils/idGenerator';
+import {
+  GEMSTONE_TYPES,
+  GEMSTONE_VARIETIES,
+  GEMSTONE_ORIGINS,
+  GEMSTONE_SHAPES,
+  CUT_GRADES,
+  COLOR_GRADES,
+  POLISH_GRADES,
+  SYMMETRY_GRADES,
+  FLUORESCENCE_LEVELS,
+  FLUORESCENCE_COLORS,
+  CARVING_MATERIALS,
+  CULTURAL_ORIGINS,
+  DEITY_FIGURES,
+  CARVING_TECHNIQUES,
+  AGE_PERIODS,
+  METAL_COLORS,
+  METAL_PURITIES,
+  PLATING_OPTIONS,
+  CRAFTING_TECHNIQUES,
+  SUPPLIERS,
+  STORAGE_LOCATIONS,
+  TAX_CATEGORIES,
+  CERTIFICATION_LABS,
+  TREATMENT_TYPES
+} from '../../utils/formConstants';
 
 interface ProductFormProps {
   product?: AnyProduct | null;
