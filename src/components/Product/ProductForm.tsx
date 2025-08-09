@@ -292,7 +292,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                     setFieldValue('productType', newType);
                     // Generate new ID when product type changes for new products
                     if (!product && values.id.includes('-')) {
-                      setFieldValue('id', generateProductId());
+                      setFieldValue('id', generateNewProductId());
                     }
                   }}
                 >
