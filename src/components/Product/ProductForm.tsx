@@ -253,6 +253,27 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
       case 'basic':
         return (
           <div className="space-y-6">
+            {/* Product ID Section */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-blue-900 mb-3 flex items-center">
+                <Hash className="h-4 w-4 mr-2" />
+                Product Identification
+              </h3>
+              <ProductIdInput
+                value={values.id}
+                onChange={(value) => setFieldValue('id', value)}
+                onValidation={(isValid, error) => {
+                  setIsIdValid(isValid);
+                  if (error) {
+                    console.log('ID validation error:', error);
+                  }
+                }}
+                placeholder="Enter unique product ID or scan QR code"
+                existingIds={[]} // TODO: This should come from your product service
+                generateId={generateProductId}
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-group">
                 <label htmlFor="productType" className="form-label">
@@ -268,6 +289,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                     const newType = e.target.value as ProductType;
                     setProductType(newType);
                     setFieldValue('productType', newType);
+                    // Generate new ID when product type changes for new products
+                    if (!product && values.id.includes('-')) {
+                      setFieldValue('id', generateProductId());
+                    }
                   }}
                 >
                   <option value="LooseStone">Loose Gemstone</option>
