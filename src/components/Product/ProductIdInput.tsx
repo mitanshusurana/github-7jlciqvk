@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { QrCode, X, Hash, Check, AlertCircle } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
 import toast from 'react-hot-toast';
+import { validateProductIdFormat, extractIdFromQrCode } from '../../utils/idGenerator';
 
 interface ProductIdInputProps {
   value: string;
