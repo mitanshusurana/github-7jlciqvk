@@ -5,7 +5,7 @@ export const productService = {
   // Get all products with pagination and filters
   async getProducts(params?: Record<string, any>) {
     try {
-      const response = await api.get('/products', { params });
+      const response = await api.get('', { params });
       // For json-server, the data is directly the array, not in a content field
       const products = Array.isArray(response.data) ? response.data : [];
       return {
@@ -24,7 +24,7 @@ export const productService = {
   // Get a single product by ID
   async getProduct(id: string) {
     try {
-      const response = await api.get(`/products/${id}`);
+      const response = await api.get(`/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -42,7 +42,7 @@ export const productService = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      const response = await api.post('/products', newProduct);
+      const response = await api.post('', newProduct);
       return response.data;
     } catch (error) {
       console.error('Error creating product:', error);
@@ -57,7 +57,7 @@ export const productService = {
         ...data,
         updatedAt: new Date().toISOString(),
       };
-      const response = await api.put(`/products/${id}`, updateData);
+      const response = await api.put(`/${id}`, updateData);
       return response.data;
     } catch (error) {
       console.error('Error updating product:', error);
@@ -68,7 +68,7 @@ export const productService = {
   // Delete a product
   async deleteProduct(id: string) {
     try {
-      const response = await api.delete(`/products/${id}`);
+      const response = await api.delete(`/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting product:', error);
