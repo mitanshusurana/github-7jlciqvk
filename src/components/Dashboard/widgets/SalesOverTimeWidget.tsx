@@ -12,18 +12,18 @@ const SalesOverTimeWidget: React.FC<SalesOverTimeWidgetProps> = ({ products }) =
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const recentSales = productList
-      .filter(p => new Date(p.createdAt) > thirtyDaysAgo)
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    const recentSales = products
+      .filter(p => new Date(p.acquisitionDate) > thirtyDaysAgo)
+      .sort((a, b) => new Date(a.acquisitionDate).getTime() - new Date(b.acquisitionDate).getTime());
 
     const salesByDay: Record<string, number> = {};
     recentSales.forEach(p => {
-      const day = formatDate(p.createdAt);
-      salesByDay[day] = (salesByDay[day] || 0) + (p.sellingPrice || 0);
+      const day = formatDate(p.acquisitionDate);
+      salesByDay[day] = (salesByDay[day] || 0) + (p.price || 0);
     });
 
     return Object.entries(salesByDay).map(([date, sales]) => ({ date, sales }));
-  }, [productList]);
+  }, [products]);
 
   return (
     <div className="card h-full p-6">
