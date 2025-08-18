@@ -52,59 +52,34 @@ export const useProducts = () => {
     const cached = productCache[cacheKey];
     if (cached) {
       setProducts(cached);
+      setPaginationMeta({
+        totalItems: cached.totalElements,
+        totalPages: cached.totalPages,
+      });
       setLoading(false);
       return;
     }
     try {
-      const response = await productService.getProducts();
-      let allProducts = response.content || [];
-
-      // Apply filters
-      if (filters.search) {
-        allProducts = allProducts.filter(p => p.name.toLowerCase().includes(filters.search.toLowerCase()));
-      }
-      if (filters.category) {
-        allProducts = allProducts.filter(p => p.productType === 'Jewelry' && p.category === filters.category);
-      }
-      if (filters.style) {
-        allProducts = allProducts.filter(p => p.productType === 'Jewelry' && p.style === filters.style);
-      }
-      if (filters.metal) {
-        allProducts = allProducts.filter(p => p.productType === 'Jewelry' && p.metal === filters.metal);
-      }
-      if (filters.clarityGrade) {
-        allProducts = allProducts.filter(p => p.productType === 'LooseStone' && p.clarityGrade === filters.clarityGrade);
-      }
-      if (filters.rarity) {
-        allProducts = allProducts.filter(p => p.productType === 'CarvedIdol' && p.rarity === filters.rarity);
-      }
-      if (filters.workmanshipGrade) {
-        allProducts = allProducts.filter(p => p.productType === 'CarvedIdol' && p.workmanshipGrade === filters.workmanshipGrade);
-      }
-      if (filters.dateFrom) {
-        allProducts = allProducts.filter(p => new Date(p.acquisitionDate) >= new Date(filters.dateFrom));
-      }
-      if (filters.dateTo) {
-        allProducts = allProducts.filter(p => new Date(p.acquisitionDate) <= new Date(filters.dateTo));
-      }
-
-      const totalElements = allProducts.length;
-      const totalPages = Math.ceil(totalElements / pagination.limit);
-      const paginatedProducts = allProducts.slice((pagination.page - 1) * pagination.limit, pagination.page * pagination.limit);
+      const params = {
+        page: pagination.page - 1, // Spring Boot pagination is 0-indexed
+        size: pagination.limit,
+        ...filters,
+      };
+      const response = await productService.getProducts(params);
 
       const result = {
-        content: paginatedProducts,
-        totalPages,
-        totalElements,
-        size: pagination.limit,
-        number: pagination.page,
+        content: response.content || [],
+        totalPages: response.totalPages,
+        totalElements: response.totalElements,
+        size: response.size,
+        number: response.number + 1, // Convert back to 1-indexed for UI
       };
 
       setProductCache(cacheKey, result);
       setProducts(result);
       setPaginationMeta({
-        totalItems: totalElements,
-        totalPages,
+        totalItems: result.totalElements,
+        totalPages: result.totalPages,
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch products';
@@ -113,7 +88,7 @@ export const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  }, [getCacheKey, pagination.page, pagination.limit, filtersKey, setProductCache, filters]);
+  }, [getCacheKey, pagination.page, pagination.limit, filtersKey, setProductCache]);
 
   // Debounce fetch on filters or pagination change
   useEffect(() => {
@@ -132,8 +107,7 @@ export const useProducts = () => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-    // Only depend on cacheKey, not the whole productCache object
-  }, [getCacheKey]);
+  }, [getCacheKey, fetchProducts]);
 
   // Invalidate cache on add/update/delete
   const clearCache = () => {

@@ -1,12 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useProducts from '../../../hooks/useProducts';
 import ProductCard from '../../Product/ProductCard';
-import { Product } from '../../../types';
+import { AnyProduct } from '../../../types';
 
-const RecentProductsWidget: React.FC = () => {
-  const { products = { content: [] }, loading } = useProducts();
-  const recentProducts = (products.content ?? []).slice(0, 4);
+interface RecentProductsWidgetProps {
+  products: AnyProduct[];
+  loading: boolean;
+}
+
+const RecentProductsWidget: React.FC<RecentProductsWidgetProps> = ({ products, loading }) => {
+  const recentProducts = products.slice(0, 4);
 
   return (
     <div className="card">

@@ -1,16 +1,18 @@
 import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import useProducts from '../../../hooks/useProducts';
+import { AnyProduct } from '../../../types';
 
-const TopPerformingCategoriesWidget: React.FC = () => {
-  const { products } = useProducts();
-  const productList = products?.content ?? [];
+interface TopPerformingCategoriesWidgetProps {
+  products: AnyProduct[];
+}
 
+const TopPerformingCategoriesWidget: React.FC<TopPerformingCategoriesWidgetProps> = ({ products }) => {
   const categoryData = useMemo(() => {
     const categoryValue: Record<string, number> = {};
-    productList.forEach(p => {
-      if (typeof p.estimatedValue === 'number') {
-        categoryValue[p.category] = (categoryValue[p.category] || 0) + p.estimatedValue;
+    products.forEach(p => {
+      const category = p.productType === 'Jewelry' ? p.category : p.productType === 'LooseStone' ? p.gemstoneType : p.material;
+      if (typeof p.price === 'number' && category) {
+        categoryValue[category] = (categoryValue[category] || 0) + p.price;
       }
     });
 
@@ -18,7 +20,7 @@ const TopPerformingCategoriesWidget: React.FC = () => {
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
-  }, [productList]);
+  }, [products]);
 
   const pieColors = ['#1A4B8C', '#2E8B57', '#E0115F', '#F59E0B', '#8B5CF6'];
 

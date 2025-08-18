@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import useProducts from '../hooks/useProducts';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -18,6 +19,8 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 const Dashboard: React.FC = () => {
   const [isDraggable, setIsDraggable] = useState(false);
   const [isResizable, setIsResizable] = useState(false);
+  const { products, loading, getCategories } = useProducts();
+  const categories = getCategories();
 
   const layouts = {
     lg: [
@@ -120,10 +123,10 @@ const Dashboard: React.FC = () => {
           autoSize={true}
         >
           <div key="total-products" className="widget-container">
-            <TotalProductsWidget />
+            <TotalProductsWidget products={products} loading={loading} />
           </div>
           <div key="categories" className="widget-container">
-            <CategoriesWidget />
+            <CategoriesWidget categories={categories} />
           </div>
           <div key="reports" className="widget-container">
             <ReportsWidget />
@@ -132,13 +135,13 @@ const Dashboard: React.FC = () => {
             <AnalyticsWidget />
           </div>
           <div key="sales-over-time" className="widget-container">
-            <SalesOverTimeWidget />
+            <SalesOverTimeWidget products={products.content} />
           </div>
           <div key="top-performing-categories" className="widget-container">
-            <TopPerformingCategoriesWidget />
+            <TopPerformingCategoriesWidget products={products.content} />
           </div>
           <div key="recent-products" className="widget-container">
-            <RecentProductsWidget />
+            <RecentProductsWidget products={products.content} loading={loading} />
           </div>
         </ResponsiveGridLayout>
       </div>

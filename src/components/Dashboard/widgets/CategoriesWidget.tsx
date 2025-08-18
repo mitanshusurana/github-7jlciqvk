@@ -1,11 +1,11 @@
 import React from 'react';
 import { Package } from 'lucide-react';
-import useProducts from '../../../hooks/useProducts';
 
-const CategoriesWidget: React.FC = () => {
-  const { getCategories } = useProducts();
-  const categories = getCategories();
+interface CategoriesWidgetProps {
+  categories: string[];
+}
 
+const CategoriesWidget: React.FC<CategoriesWidgetProps> = ({ categories }) => {
   return (
     <div className="card p-6 flex items-center">
       <div className="rounded-full bg-secondary-100 p-3 mr-4">

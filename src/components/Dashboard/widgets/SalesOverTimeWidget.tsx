@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import useProducts from '../../../hooks/useProducts';
+import { AnyProduct } from '../../../types';
 import { formatCurrency, formatDate } from '../../../utils/formatters';
 
-const SalesOverTimeWidget: React.FC = () => {
-  const { products } = useProducts();
-  const productList = products?.content ?? [];
+interface SalesOverTimeWidgetProps {
+  products: AnyProduct[];
+}
 
+const SalesOverTimeWidget: React.FC<SalesOverTimeWidgetProps> = ({ products }) => {
   const salesData = useMemo(() => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

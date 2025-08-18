@@ -1,10 +1,13 @@
 import React from 'react';
 import { Diamond } from 'lucide-react';
-import useProducts from '../../../hooks/useProducts';
+import { PaginatedProducts } from '../../../types';
 
-const TotalProductsWidget: React.FC = () => {
-  const { products = { content: [] }, loading } = useProducts();
+interface TotalProductsWidgetProps {
+  products: PaginatedProducts;
+  loading: boolean;
+}
 
+const TotalProductsWidget: React.FC<TotalProductsWidgetProps> = ({ products, loading }) => {
   return (
     <div className="card p-6 flex items-center">
       <div className="rounded-full bg-primary-100 p-3 mr-4">
@@ -12,7 +15,7 @@ const TotalProductsWidget: React.FC = () => {
       </div>
       <div>
         <p className="text-sm font-medium text-neutral-500">Total Products</p>
-        <p className="text-2xl font-semibold text-neutral-900">{loading ? '...' : (products.content ?? []).length}</p>
+        <p className="text-2xl font-semibold text-neutral-900">{loading ? '...' : products.totalElements}</p>
       </div>
     </div>
   );

@@ -6,15 +6,7 @@ export const productService = {
   async getProducts(params?: Record<string, any>) {
     try {
       const response = await api.get('', { params });
-      // For json-server, the data is directly the array, not in a content field
-      const products = Array.isArray(response.data) ? response.data : [];
-      return {
-        content: products,
-        totalPages: 1,
-        totalElements: products.length,
-        size: products.length,
-        number: 1,
-      };
+      return response.data;
     } catch (error) {
       console.error('Error fetching products:', error);
       throw new Error('Failed to fetch products. Please check if the API server is running.');
