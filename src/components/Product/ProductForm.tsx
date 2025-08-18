@@ -48,6 +48,8 @@ import {
 import ProductIdInput from './ProductIdInput';
 import { generateProductId } from '../../utils/idGenerator';
 import { useEffect } from 'react';
+import { uploadService } from '../../services/uploadService';
+import toast from 'react-hot-toast';
 import {
   GEMSTONE_TYPES,
   GEMSTONE_VARIETIES,
@@ -1065,9 +1067,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                         accept="image/*"
                         className="hidden"
                         id="image-upload"
-                        onChange={(e) => {
+                        onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
                           const files = Array.from(e.target.files || []);
-                          files.forEach(file => push(URL.createObjectURL(file)));
+                          if (files.length === 0) return;
+
+                          const toastId = toast.loading(`Uploading ${files.length} image(s)...`);
+                          try {
+                            const uploadedUrls = await uploadService.uploadMultipleFiles(files, 'images');
+                            uploadedUrls.forEach(url => push(url));
+                            toast.success('Images uploaded successfully!', { id: toastId });
+                          } catch (error) {
+                            toast.error('Failed to upload images.', { id: toastId });
+                          }
                         }}
                       />
                       <label htmlFor="image-upload" className="cursor-pointer">
@@ -1118,9 +1129,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                         accept="video/*"
                         className="hidden"
                         id="video-upload"
-                        onChange={(e) => {
+                        onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
                           const files = Array.from(e.target.files || []);
-                          files.forEach(file => push(URL.createObjectURL(file)));
+                          if (files.length === 0) return;
+
+                          const toastId = toast.loading(`Uploading ${files.length} video(s)...`);
+                          try {
+                            const uploadedUrls = await uploadService.uploadMultipleFiles(files, 'videos');
+                            uploadedUrls.forEach(url => push(url));
+                            toast.success('Videos uploaded successfully!', { id: toastId });
+                          } catch (error) {
+                            toast.error('Failed to upload videos.', { id: toastId });
+                          }
                         }}
                       />
                       <label htmlFor="video-upload" className="cursor-pointer">

@@ -17,9 +17,11 @@ export const useProducts = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<PaginationParams>({
+  const [pagination, setPagination] = useState({
     page: 1,
     limit: 12,
+  });
+  const [paginationMeta, setPaginationMeta] = useState({
     totalItems: 0,
     totalPages: 0,
   });
@@ -34,10 +36,12 @@ export const useProducts = () => {
     clearCaches,
   } = useProductCacheStore();
 
+  const filtersKey = JSON.stringify(filters);
+
   // Helper to get cache key
   const getCacheKey = useCallback(
     () => JSON.stringify({ page: pagination.page, limit: pagination.limit, ...filters }),
-    [pagination.page, pagination.limit, filters]
+    [pagination.page, pagination.limit, filtersKey]
   );
 
   // Fetch products with global cache
@@ -98,11 +102,10 @@ export const useProducts = () => {
 
       setProductCache(cacheKey, result);
       setProducts(result);
-      setPagination(prev => ({
-        ...prev,
+      setPaginationMeta({
         totalItems: totalElements,
         totalPages,
-      }));
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch products';
       setError(errorMessage);
@@ -110,7 +113,7 @@ export const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  }, [getCacheKey, pagination.page, pagination.limit, filters, setProductCache]);
+  }, [getCacheKey, pagination.page, pagination.limit, filtersKey, setProductCache, filters]);
 
   // Debounce fetch on filters or pagination change
   useEffect(() => {
@@ -216,13 +219,13 @@ export const useProducts = () => {
 
   // Load more products
   const loadMore = useCallback(() => {
-    if (pagination.page < pagination.totalPages) {
+    if (pagination.page < paginationMeta.totalPages) {
       setPagination((prev) => ({
         ...prev,
         page: prev.page + 1,
       }));
     }
-  }, [pagination.page, pagination.totalPages]);
+  }, [pagination.page, paginationMeta.totalPages]);
 
   // Get unique categories from products
   const getCategories = useCallback(() => {
@@ -246,8 +249,8 @@ export const useProducts = () => {
     products,
     loading,
     error,
-    pagination,
-    hasMore: pagination.page < pagination.totalPages,
+    pagination: { ...pagination, ...paginationMeta },
+    hasMore: pagination.page < paginationMeta.totalPages,
     loadMore,
     filters,
     setFilters,
