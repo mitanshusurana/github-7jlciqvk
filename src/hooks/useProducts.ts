@@ -163,18 +163,11 @@ export const useProducts = () => {
   const addProduct = useCallback(async (data: Omit<AnyProduct, 'id' | 'acquisitionDate'>) => {
     try {
       const newProduct = await productService.createProduct(data);
-      const shopifyProduct = await shopifyService.createProduct(newProduct);
-      const updatedProduct = await productService.updateProduct(newProduct.id, {
-        ...newProduct,
-        platformIds: {
-          ...newProduct.platformIds,
-          shopifyId: shopifyProduct.id.toString(),
-        },
-      });
+      await shopifyService.createProduct(newProduct);
       clearCache();
       clearSingleProductCache();
       fetchProducts();
-      return updatedProduct;
+      return newProduct;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to add product';
       toast.error(errorMessage);

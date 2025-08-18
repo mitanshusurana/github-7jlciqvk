@@ -151,7 +151,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   }, [productType]);
 
   // Create initial values based on product type
-  const createInitialValues = useCallback((): AnyProduct => {
+  const createInitialValues = useCallback((type: ProductType): AnyProduct => {
     const baseValues = {
       id: product?.id || '',
       name: product?.name || '',
@@ -284,7 +284,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
     }
   };
 
-  const renderFormContent = (values: AnyProduct, setFieldValue: any) => {
+  const renderFormContent = (values: AnyProduct, setFieldValue: any, setValues: (values: React.SetStateAction<AnyProduct>) => void) => {
     useEffect(() => {
       const newName = generateProductName(values);
       if (newName) {
@@ -331,12 +331,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                 value={productType}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   const newType = e.target.value as ProductType;
+                  const preservedId = values.id;
                   setProductType(newType);
-                  setFieldValue('productType', newType);
-                  // Generate new ID when product type changes for new products
-                  if (!product && values.id.includes('-')) {
-                    setFieldValue('id', generateNewProductId());
-                  }
+
+                  const newInitialValues = createInitialValues(newType);
+
+                  setValues({
+                    ...newInitialValues,
+                    id: preservedId,
+                  });
                 }}
               >
                 <option value="LooseStone">Loose Gemstone</option>
@@ -1217,16 +1220,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
     <DndProvider backend={HTML5Backend}>
       <div className="max-w-7xl mx-auto">
         <Formik
-          initialValues={createInitialValues()}
+          initialValues={createInitialValues(product?.productType || 'LooseStone')}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
-          enableReinitialize
         >
-          {({ values, setFieldValue, isSubmitting }) => (
+          {({ values, setFieldValue, isSubmitting, setValues }) => (
             <Form className="space-y-8">
               {/* Form Content */}
               <div className="min-h-[600px]">
-                {renderFormContent(values, setFieldValue)}
+                {renderFormContent(values, setFieldValue, setValues)}
               </div>
 
               {/* Form Actions */}
