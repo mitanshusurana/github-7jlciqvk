@@ -1,1 +1,0 @@
-import{j as e}from"./index-feReXb3v.js";const a=()=>e.jsxs("div",{className:"container-page",children:[e.jsx("h1",{className:"text-3xl font-bold text-neutral-900",children:"User Management"}),e.jsx("p",{className:"mt-1 text-neutral-500",children:"This page is only accessible to admins."})]});export{a as default};
